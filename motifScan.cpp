@@ -37,11 +37,15 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 		cout << "Unable to open refSeq file." << endl;
 		return 0; 
 	}
-	//printf("%s\n", getline(inFile1, 1));
 
 	string refSeq = fileToString(inFile1);
-	//string refSeq = ref 
-	printf("%s\n", refSeq.c_str()); 
+	refSeq.ignore(numeric_limits<streamsize>::max(), '\n');
+	//refSeq = refSeq.c_str();
+	size_t m1_found = refSeq.find(mot1);  //working, but need to start searching at line 1 of file (not line 0)
+	cout << m1_found << endl; 
+	//printf("%d\n", m1_found);
+ 
+	//printf("%s\n", refSeq.c_str()); 
 
 	return 1; //default, if no motif conservation found; else, return seq location where conserved motifs found (on ref seq)
 }
