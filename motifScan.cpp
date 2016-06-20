@@ -27,7 +27,7 @@ string fileToString(string fileName) {
 	return "dummy";
 }
 
-void scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
+int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 	
 	//vector<string>* myF1 = fileToString(file1);
 	//vector<string>* myF2 = fileToString(file2); 
@@ -37,12 +37,15 @@ void scanEngine(string file1, string file2, string mot1, string mot2, int winSiz
 	//cout <<  mot2; 
 	//cout << " ";
 	//cout <<  winSize << endl << endl; 
-	return; 
+
+	
+
+	return 1; //default, if no motif conservation found; else, return seq location where conserved motifs found (on ref seq)
 }
 
 int main(int argc, char* argv[]) {
 
-	vector<char> alfa = ['A', 'G', 'C', 'T'];
+	int location; 
 
 	if(argc != 6) {
 		cout << endl; 
@@ -63,8 +66,25 @@ int main(int argc, char* argv[]) {
 			cout << "See README file for more" << endl << endl; 
 		} 
 		else {
-			scanEngine(f1, f2, m1, m2, wSize);
-			cout << "hello world" << endl;
+			cout << endl;
+			cout << "searching..." << endl; 
+			location = scanEngine(f1, f2, m1, m2, wSize);
+			cout << endl; 
+			printf("Reference Seq:  %s\n", f1.c_str()); 
+			printf("Query Seq:  %s\n", f2.c_str());
+			printf("Motif1:  %s\n", m1.c_str());
+			printf("Motif2:  %s\n", m2.c_str());
+			printf("Window Size:  %d\n", wSize); 
+			cout << endl; 
+			cout << "---------------------------------" << endl << endl; 
+			if(location == 1){
+				printf("No conservation of motifs found\n"); 
+				cout << endl; 
+			}
+			else {
+				printf("Conservation of both motifs found at %d on ref seq\n", location); 
+				cout << endl; 
+			}
 		} 
 	}
 }
