@@ -21,24 +21,27 @@ using namespace std;
 //////////////////////////MOTIFSCAN IMPLEMENTATION/////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-string fileToString(string fileName) {
-
-	//TODO: IMPLEMENT ME!!
-	return "dummy";
+string fileToString(ifstream &inFile) {
+	stringstream buffer;
+  	buffer << inFile.rdbuf();
+  	string infile = buffer.str();
+  	return infile;
 }
 
 int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 	
-	//vector<string>* myF1 = fileToString(file1);
-	//vector<string>* myF2 = fileToString(file2); 
-	//cout << file1; 
-	//cout << file2; 
-	//cout <<  mot1; 
-	//cout <<  mot2; 
-	//cout << " ";
-	//cout <<  winSize << endl << endl; 
+	ifstream inFile1, inFile2; 
 
-	
+	inFile1.open(file1.c_str());
+	if(!inFile1.is_open()) {
+		cout << "Unable to open refSeq file." << endl;
+		return 0; 
+	}
+	//printf("%s\n", getline(inFile1, 1));
+
+	string refSeq = fileToString(inFile1);
+	//string refSeq = ref 
+	printf("%s\n", refSeq.c_str()); 
 
 	return 1; //default, if no motif conservation found; else, return seq location where conserved motifs found (on ref seq)
 }
