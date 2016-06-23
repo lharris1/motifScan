@@ -29,8 +29,12 @@ string fileToString(ifstream &inFile) {
   	return infile;
 }
 
-int finderFunc(string seq, string motif) {
-	size_t found = seq.find(motif);
+int finderFunc(string seq, string motif, int myStart, int myStop) {
+	cout << myStart << endl; 
+	cout << myStop << endl;
+	int strLen = myStop - myStart; 
+	string substr = seq.substr(myStart, strLen);  
+	size_t found = substr.find(motif);
 	if(found!=string::npos) {
 		return found; 
 	}
@@ -41,6 +45,7 @@ int finderFunc(string seq, string motif) {
 
 int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 	
+	int start, stop; 
 	ifstream inFile1, inFile2; 
 
 	inFile1.open(file1.c_str());
@@ -50,7 +55,9 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	}
 
 	string refSeq = fileToString(inFile1);
- 	int mot1_found = finderFunc(refSeq, mot1); 
+	start = 0; 
+	stop = refSeq.size(); 
+ 	int mot1_found = finderFunc(refSeq, mot1, start, stop); 
 
 	if(mot1_found == 0){
 		cout << mot1 << " not found on refSeq " << endl; 
@@ -59,9 +66,11 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	}
 	else {
 		cout << "motif1 found on refSeq at: " << mot1_found << endl << endl; 
-		int mot2_found = finderFunc(refSeq, mot2); 
+		start = mot1_found - winSize;
+		stop = mot1_found + winSize;  
+		int mot2_found = finderFunc(refSeq, mot2, start, stop); 
 		if(mot2_found == 0){
-			cout << mot2 << " not found on refSeq " << endl; 
+			cout << mot2 << " not found on refSeq within winSize of " << winSize << endl; 
 			inFile1.close(); 
 			return 1; 
 		}
@@ -73,7 +82,7 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 				return 0; 
 			}
 			string querySeq = fileToString(inFile2);
-			int mot1_found1 = finderFunc(querySeq, mot1);
+			int mot1_found1 = finderFunc(querySeq, mot1, start, stop);
 			if(mot1_found1 == 0){
 				cout << mot1 << " not found on querySeq" << endl; 
 				inFile1.close();
@@ -82,7 +91,7 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 			}
 			else {
 				cout << "motif1 found on querySeq at: " << mot1_found1 << endl; 
-				int mot2_found1 = finderFunc(querySeq, mot2); 
+				int mot2_found1 = finderFunc(querySeq, mot2, start, stop); 
 				if(mot2_found1 == 0){
 					cout << mot2 << " not found on querySeq" << endl; 
 					inFile1.close();
