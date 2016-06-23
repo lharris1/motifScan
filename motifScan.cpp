@@ -29,6 +29,16 @@ string fileToString(ifstream &inFile) {
   	return infile;
 }
 
+int finderFunc(string seq, string motif) {
+	size_t found = seq.find(motif);
+	if(found!=string::npos) {
+		return found; 
+	}
+	else {
+		return 0; 
+	}
+}
+
 int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 	
 	ifstream inFile1, inFile2; 
@@ -40,36 +50,54 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	}
 
 	string refSeq = fileToString(inFile1);
- 	size_t mot1_found = refSeq.find(mot1); 
-	if(mot1_found!=string::npos){
+ 	int mot1_found = finderFunc(refSeq, mot1); 
+
+	if(mot1_found == 0){
+		cout << mot1 << " not found on refSeq " << endl; 
+		inFile1.close(); 
+		return 1; 
+	}
+	else {
 		cout << "motif1 found on refSeq at: " << mot1_found << endl << endl; 
-		size_t mot2_found = refSeq.find(mot2);
-		if(mot2_found!=string::npos){              //BOTH MOTIFS FOUND ON REFSEQ!!!
-			cout << "motif2 found on refSeq at: " << mot2_found << endl; 
+		int mot2_found = finderFunc(refSeq, mot2); 
+		if(mot2_found == 0){
+			cout << mot2 << " not found on refSeq " << endl; 
+			inFile1.close(); 
+			return 1; 
+		}
+		else {
+			cout << "motif2 found on refSeq at: " << mot2_found << endl << endl; 
 			inFile2.open(file2.c_str());
 			if(!inFile2.is_open()) {
 				cout << "Unable to open querySeq file." << endl; 
 				return 0; 
 			}
 			string querySeq = fileToString(inFile2);
-			size_t mot1_found1 = querySeq.find(mot1); 
-			if(mot1_found1!=string::npos){
-				cout << "motif1 found on querySeq at: " << mot1_found1 << endl;  
-				size_t mot2_found1 = querySeq.find(mot2);
-				if(mot2_found1!=string::npos){
+			int mot1_found1 = finderFunc(querySeq, mot1);
+			if(mot1_found1 == 0){
+				cout << mot1 << " not found on querySeq" << endl; 
+				inFile1.close();
+				inFile2.close(); 
+				return 1; 
+			}
+			else {
+				cout << "motif1 found on querySeq at: " << mot1_found1 << endl; 
+				int mot2_found1 = finderFunc(querySeq, mot2); 
+				if(mot2_found1 == 0){
+					cout << mot2 << " not found on querySeq" << endl; 
+					inFile1.close();
+					inFile2.close(); 
+					return 1; 
+				}
+				else {
 					cout << "motif2 found on querySeq at: " << mot2_found1 << endl; 
+					inFile1.close(); 
+					inFile2.close(); 
+					return 2; 
 				}
 			}
 		}
 	}
-
-
-
- 	//printf("%s\n", refSeq.c_str()); 
- 	inFile1.close(); 
- 	inFile2.close(); 
-	return 1; //default, if no motif conservation found; else, return seq location where conserved motifs found (on ref seq)
-			  //what to do if return 0?? 
 }
 
 int main(int argc, char* argv[]) {
@@ -96,9 +124,6 @@ int main(int argc, char* argv[]) {
 		} 
 		else {
 			cout << endl;
-			cout << "searching..." << endl; 
-			location = scanEngine(f1, f2, m1, m2, wSize);
-			cout << endl; 
 			printf("Reference Seq:  %s\n", f1.c_str()); 
 			printf("Query Seq:  %s\n", f2.c_str());
 			printf("Motif1:  %s\n", m1.c_str());
@@ -106,13 +131,15 @@ int main(int argc, char* argv[]) {
 			printf("Window Size:  %d\n", wSize); 
 			cout << endl; 
 			cout << "---------------------------------" << endl << endl; 
+			cout << "searching..." << endl << endl; 
+			location = scanEngine(f1, f2, m1, m2, wSize);
 			if(location == 1){
 				printf("No conservation of motifs found\n"); 
 				cout << endl; 
 			}
 			else {
-				printf("Conservation of both motifs found at %d on ref seq\n", location); 
-				cout << endl; 
+				cout << endl << endl; 
+				cout << "Conserved sites found!!" << endl << endl << endl; 
 			}
 		} 
 	}
