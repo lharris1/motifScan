@@ -22,6 +22,15 @@ using namespace std;
 //////////////////////////MOTIFSCAN IMPLEMENTATION/////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+string fileToString(string fileName) {
+	string header, seq; 
+	ifstream myFile(fileName);
+	getline(myFile, header);
+	getline(myFile, seq);
+	myFile.close();
+	return seq; 
+}
+
 int finderFunc(string seq, string motif, int myStart, int myStop) {
 	int my_start, my_stop; 
 	if(myStart < 0){
@@ -50,17 +59,13 @@ int finderFunc(string seq, string motif, int myStart, int myStop) {
 }
 
 int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
-	
-	int start, stop; 
-	string header, header1, refSeq, querySeq; 
 
-	ifstream myFile(file1);
-	getline(myFile, header);
-	getline(myFile, refSeq);
-	myFile.close();
 
-	start = 0; 
-	stop = refSeq.size(); 
+	string refSeq = fileToString(file1);
+	string querySeq = fileToString(file2);
+
+	int start = 0; 
+	int stop = refSeq.size(); 
  	int mot1_found = finderFunc(refSeq, mot1, start, stop); 
 
 	if(mot1_found == 0){
@@ -78,10 +83,6 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 		}
 		else {
 			cout << "motif2 found on refSeq at: " << mot2_found << endl;  
-			ifstream myFile1(file2);
-			getline(myFile1, header1);
-			getline(myFile1, querySeq);
-			myFile1.close();
 			int mot1_found1 = finderFunc(querySeq, mot1, start, stop);
 			if(mot1_found1 == 0){
 				cout << "motif1 not found on querySeq" << endl; 
