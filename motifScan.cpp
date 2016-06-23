@@ -36,7 +36,7 @@ int finderFunc(string seq, string motif, int myStart, int myStop) {
 	string substr = seq.substr(myStart, strLen);  
 	size_t found = substr.find(motif);
 	if(found!=string::npos) {
-		return found; 
+		return found+myStart; 
 	}
 	else {
 		return 0; 
