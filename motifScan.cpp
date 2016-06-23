@@ -45,8 +45,6 @@ int finderFunc(string seq, string motif, int myStart, int myStop) {
 	else{
 		my_stop = myStop; 
 	}
-	//cout << my_start << endl; //DELETE ME!!!
-	//cout << myStop << endl;   //DELETE ME!!!
 	int strLen = my_stop - my_start; 
 	string substr = seq.substr(my_start, strLen);  
 	size_t found = substr.find(motif);
@@ -60,48 +58,52 @@ int finderFunc(string seq, string motif, int myStart, int myStop) {
 
 int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 
-
 	string refSeq = fileToString(file1);
 	string querySeq = fileToString(file2);
 
 	int start = 0; 
-	int stop = refSeq.size(); 
- 	int mot1_found = finderFunc(refSeq, mot1, start, stop); 
+	int my_stop = refSeq.size(); 
+	int stop = my_stop; 
+	int index = mot1.size();
+	int index1 = mot2.size(); 
 
-	if(mot1_found == 0){
-		cout << "motif1 not found on refSeq " << endl; 
-		return 1; 
-	}
-	else {
-		cout << "motif1 found on refSeq at: " << mot1_found << endl; 
-		start = mot1_found - winSize;
-		stop = mot1_found + winSize;  
-		int mot2_found = finderFunc(refSeq, mot2, start, stop); 
-		if(mot2_found == 0){
-			cout << "motif2 not found on refSeq within winSize of " << winSize << endl; 
+	while(stop <= refSeq.size()) {
+ 		int mot1_found = finderFunc(refSeq, mot1, start, (stop+index1)); 
+		if(mot1_found == 0){
+			cout << "motif1 not found on refSeq " << endl; 
 			return 1; 
 		}
 		else {
-			cout << "motif2 found on refSeq at: " << mot2_found << endl;  
-			int mot1_found1 = finderFunc(querySeq, mot1, start, stop);
-			if(mot1_found1 == 0){
-				cout << "motif1 not found on querySeq" << endl; 
-				return 1; 
+			start = mot1_found - winSize;
+			stop = mot1_found + winSize;  
+			int mot2_found = finderFunc(refSeq, mot2, start, stop); 
+			if(mot2_found == 0){
+				start = mot1_found+index; 
+				stop = my_stop; 
 			}
 			else {
-				cout << "motif1 found on querySeq at: " << mot1_found1 << endl; 
-				int mot2_found1 = finderFunc(querySeq, mot2, start, stop); 
-				if(mot2_found1 == 0){
-					cout << "motif2 not found on querySeq" << endl; 
-					return 1; 
+				int mot1_found1 = finderFunc(querySeq, mot1, start, stop);
+				if(mot1_found1 == 0){
+					start = mot1_found+index; 
+					stop = my_stop; 
 				}
 				else {
-					cout << "motif2 found on querySeq at: " << mot2_found1 << endl; 
-					return 2; 
+					int mot2_found1 = finderFunc(querySeq, mot2, start, stop); 
+					if(mot2_found1 == 0){
+						start = mot1_found+index; 
+						stop = my_stop; 
+					}
+					else {
+						cout << "motif1 found on refSeq at: " << mot1_found << endl;
+						cout << "motif2 found on refSeq at: " << mot2_found << endl;
+						cout << "motif1 found on querySeq at: " << mot1_found1 << endl; 
+						cout << "motif2 found on querySeq at: " << mot2_found1 << endl; 
+						return 2; 
+					}
 				}
-			}
+			}	
 		}
-	}
+	} 
 }
 
 int main(int argc, char* argv[]) {
