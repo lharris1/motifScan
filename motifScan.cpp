@@ -22,21 +22,27 @@ using namespace std;
 //////////////////////////MOTIFSCAN IMPLEMENTATION/////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-string fileToString(ifstream &inFile) {
-	stringstream buffer;
-  	buffer << inFile.rdbuf();
-  	string infile = buffer.str();
-  	return infile;
-}
-
 int finderFunc(string seq, string motif, int myStart, int myStop) {
-	//cout << myStart << endl; 
-	//cout << myStop << endl;
-	int strLen = myStop - myStart; 
-	string substr = seq.substr(myStart, strLen);  
+	int my_start, my_stop; 
+	if(myStart < 0){
+		my_start = 0; 
+	}
+	else{
+		my_start = myStart; 
+	}
+	if(myStop > seq.size()){
+		my_stop = seq.size();
+	}
+	else{
+		my_stop = myStop; 
+	}
+	//cout << my_start << endl; //DELETE ME!!!
+	//cout << myStop << endl;   //DELETE ME!!!
+	int strLen = my_stop - my_start; 
+	string substr = seq.substr(my_start, strLen);  
 	size_t found = substr.find(motif);
 	if(found!=string::npos) {
-		return found+myStart; 
+		return found + my_start; 
 	}
 	else {
 		return 0; 
@@ -46,22 +52,19 @@ int finderFunc(string seq, string motif, int myStart, int myStop) {
 int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 	
 	int start, stop; 
-	ifstream inFile1, inFile2; 
+	string header, header1, refSeq, querySeq; 
 
-	inFile1.open(file1.c_str());
-	if(!inFile1.is_open()) {
-		cout << "Unable to open refSeq file." << endl;
-		return 0; 
-	}
+	ifstream myFile(file1);
+	getline(myFile, header);
+	getline(myFile, refSeq);
+	myFile.close();
 
-	string refSeq = fileToString(inFile1);
 	start = 0; 
 	stop = refSeq.size(); 
  	int mot1_found = finderFunc(refSeq, mot1, start, stop); 
 
 	if(mot1_found == 0){
 		cout << "motif1 not found on refSeq " << endl; 
-		inFile1.close(); 
 		return 1; 
 	}
 	else {
@@ -71,22 +74,17 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 		int mot2_found = finderFunc(refSeq, mot2, start, stop); 
 		if(mot2_found == 0){
 			cout << "motif2 not found on refSeq within winSize of " << winSize << endl; 
-			inFile1.close(); 
 			return 1; 
 		}
 		else {
-			cout << "motif2 found on refSeq at: " << mot2_found << endl; 
-			inFile2.open(file2.c_str());
-			if(!inFile2.is_open()) {
-				cout << "Unable to open querySeq file." << endl; 
-				return 0; 
-			}
-			string querySeq = fileToString(inFile2);
+			cout << "motif2 found on refSeq at: " << mot2_found << endl;  
+			ifstream myFile1(file2);
+			getline(myFile1, header1);
+			getline(myFile1, querySeq);
+			myFile1.close();
 			int mot1_found1 = finderFunc(querySeq, mot1, start, stop);
 			if(mot1_found1 == 0){
 				cout << "motif1 not found on querySeq" << endl; 
-				inFile1.close();
-				inFile2.close(); 
 				return 1; 
 			}
 			else {
@@ -94,14 +92,10 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 				int mot2_found1 = finderFunc(querySeq, mot2, start, stop); 
 				if(mot2_found1 == 0){
 					cout << "motif2 not found on querySeq" << endl; 
-					inFile1.close();
-					inFile2.close(); 
 					return 1; 
 				}
 				else {
 					cout << "motif2 found on querySeq at: " << mot2_found1 << endl; 
-					inFile1.close(); 
-					inFile2.close(); 
 					return 2; 
 				}
 			}
