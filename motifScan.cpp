@@ -23,12 +23,14 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////
 
 string fileToString(string fileName) {
-	string header, seq; 
+	string header, line, fullSeq; 
 	ifstream myFile(fileName);
 	getline(myFile, header);
-	getline(myFile, seq);
+	while(getline(myFile, line)){
+		fullSeq.append(line);
+	}
 	myFile.close();
-	return seq; 
+	return fullSeq; 
 }
 
 int finderFunc(string seq, string motif, int myStart, int myStop) {
@@ -59,6 +61,7 @@ int finderFunc(string seq, string motif, int myStart, int myStop) {
 int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 
 	string refSeq = fileToString(file1);
+	//cout << refSeq << endl; 
 	string querySeq = fileToString(file2);
 
 	int start = 0; 
@@ -70,7 +73,7 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	while(stop <= refSeq.size()) {
  		int mot1_found = finderFunc(refSeq, mot1, start, (stop+index1)); 
 		if(mot1_found == 0){
-			cout << "motif1 not found on refSeq " << endl; 
+			//cout << "motif1 not found on refSeq " << endl; 
 			return 1; 
 		}
 		else {
