@@ -4,4 +4,22 @@
  Swarthmore College
  June 2016
 
- TODO: add installation/configuration steps here!!! 
+INPUT
+   refSeq - reference sequence file, in FASTA format
+   querySeq - query sequence file, in FASTA format
+   mot1 - first motif to search for 
+   mot2 - second motif to search for 
+   winSize - allowable sequence gap between two motifs
+
+SEARCH ALGORITHM 
+ 	1. scan refSeq for mot1
+       	record location, call it mot1_found
+ 	2. look for mot2 w/in range of +/- winSize of mot1_found on refSeq
+        record location, call it mot2_found
+ 	3. if mot2_found on refSeq:
+ 	    go to mot1_found on querySeq
+ 	    is mot1 there (or within +/- winSize) on querySeq?
+ 	        if not, go to step 4
+ 	        if yes, scan for mot2 w/in range of +/- winSize of mot2_found on querySeq
+ 	        	output mot1_found 
+ 	4. else, back up to step 1, continue scanning from mot1_found on refSeq

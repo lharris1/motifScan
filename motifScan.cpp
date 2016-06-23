@@ -40,15 +40,36 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	}
 
 	string refSeq = fileToString(inFile1);
-	//refSeq.ignore(numeric_limits<streamsize>::max(), '\n');
-	//refSeq = refSeq.c_str();
-	//size_t m1_found = refSeq.find(mot1);  //working, but need to start searching at line 1 of file (not line 0)
-	//cout << m1_found << endl; 
-	//printf("%d\n", m1_found);
- 
-	printf("%s\n", refSeq.c_str()); 
+ 	size_t mot1_found = refSeq.find(mot1); 
+	if(mot1_found!=string::npos){
+		cout << "motif1 found on refSeq at: " << mot1_found << endl << endl; 
+		size_t mot2_found = refSeq.find(mot2);
+		if(mot2_found!=string::npos){              //BOTH MOTIFS FOUND ON REFSEQ!!!
+			cout << "motif2 found on refSeq at: " << mot2_found << endl; 
+			inFile2.open(file2.c_str());
+			if(!inFile2.is_open()) {
+				cout << "Unable to open querySeq file." << endl; 
+				return 0; 
+			}
+			string querySeq = fileToString(inFile2);
+			size_t mot1_found1 = querySeq.find(mot1); 
+			if(mot1_found1!=string::npos){
+				cout << "motif1 found on querySeq at: " << mot1_found1 << endl;  
+				size_t mot2_found1 = querySeq.find(mot2);
+				if(mot2_found1!=string::npos){
+					cout << "motif2 found on querySeq at: " << mot2_found1 << endl; 
+				}
+			}
+		}
+	}
 
+
+
+ 	//printf("%s\n", refSeq.c_str()); 
+ 	inFile1.close(); 
+ 	inFile2.close(); 
 	return 1; //default, if no motif conservation found; else, return seq location where conserved motifs found (on ref seq)
+			  //what to do if return 0?? 
 }
 
 int main(int argc, char* argv[]) {
