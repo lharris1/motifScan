@@ -1,5 +1,6 @@
 /*
- motifScan: TODO add a program descripton here!!!
+ motifScan: This program takes two files in FASTA format and searches for clusters of conserved binding
+            sites, as specified by user. 
 
  Created by Lincoln Harris
  Swarthmore College
@@ -39,13 +40,13 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	}
 
 	string refSeq = fileToString(inFile1);
-	refSeq.ignore(numeric_limits<streamsize>::max(), '\n');
+	//refSeq.ignore(numeric_limits<streamsize>::max(), '\n');
 	//refSeq = refSeq.c_str();
-	size_t m1_found = refSeq.find(mot1);  //working, but need to start searching at line 1 of file (not line 0)
-	cout << m1_found << endl; 
+	//size_t m1_found = refSeq.find(mot1);  //working, but need to start searching at line 1 of file (not line 0)
+	//cout << m1_found << endl; 
 	//printf("%d\n", m1_found);
  
-	//printf("%s\n", refSeq.c_str()); 
+	printf("%s\n", refSeq.c_str()); 
 
 	return 1; //default, if no motif conservation found; else, return seq location where conserved motifs found (on ref seq)
 }
