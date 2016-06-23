@@ -58,6 +58,17 @@ int finderFunc(string seq, string motif, int myStart, int myStop) {
 	}
 }
 
+void outputClusterFound(int m1Ref, int m2Ref, int m1Query, int m2Query) {
+	cout << "----------------------------------------" << endl; 
+	cout << "       CONSERVED CLUSTER FOUND!!        " << endl; 
+	cout << "motif1 found on refSeq at: " << m1Ref<< endl;
+	cout << "motif2 found on refSeq at: " << m2Ref << endl;
+	cout << "motif1 found on querySeq at: " << m1Query << endl; 
+	cout << "motif2 found on querySeq at: " << m2Query << endl; 
+	cout << "----------------------------------------" << endl; 
+	return; 
+}
+
 int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 
 	string refSeq = fileToString(file1);
@@ -71,6 +82,7 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	int index1 = mot2.size(); 
 
 	while(stop <= refSeq.size()) {
+		//cout << stop; 
  		int mot1_found = finderFunc(refSeq, mot1, start, (stop+index1)); 
 		if(mot1_found == 0){
 			//cout << "motif1 not found on refSeq " << endl; 
@@ -97,16 +109,19 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 						stop = my_stop; 
 					}
 					else {
-						cout << "motif1 found on refSeq at: " << mot1_found << endl;
-						cout << "motif2 found on refSeq at: " << mot2_found << endl;
-						cout << "motif1 found on querySeq at: " << mot1_found1 << endl; 
-						cout << "motif2 found on querySeq at: " << mot2_found1 << endl; 
-						return 2; 
+						outputClusterFound(mot1_found, mot2_found, mot1_found1, mot2_found1);
+						start = mot1_found+index;
+						if(stop> my_stop) {
+							return 1; 
+						}
+						stop = my_stop; 
+
 					}
 				}
 			}	
 		}
 	} 
+	return 1; 
 }
 
 int main(int argc, char* argv[]) {
@@ -139,7 +154,7 @@ int main(int argc, char* argv[]) {
 			printf("Motif2:  %s\n", m2.c_str());
 			printf("Window Size:  %d\n", wSize); 
 			cout << endl; 
-			cout << "---------------------------------" << endl << endl; 
+			cout << "----------------------------------------" << endl << endl; 
 			cout << "searching..." << endl << endl; 
 			location = scanEngine(f1, f2, m1, m2, wSize);
 			if(location == 1){
