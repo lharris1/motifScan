@@ -132,12 +132,12 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	int stop = my_stop; 
 	int index = mot1.size();
 	int index1 = mot2.size(); 
-	int clusterCount = 0; 
+	int clusterCount = 0, myClusterCount = 0; 
 
 	while(stop <= refSeq.size()) {
  		int mot1_found = finderFunc(refSeq, mot1, start, (stop+index1)); 
 		if(mot1_found == 0){
-			return 1; 
+			break; 
 		}
 		else {
 			start = mot1_found - winSize;
@@ -164,7 +164,7 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 						outputClusterFound(mot1_found, mot2_found, mot1_found1, mot2_found1);
 						start = mot1_found+index;
 						if(stop> my_stop) {
-							return clusterCount; 
+							break; 
 						}
 						stop = my_stop; 
 
@@ -173,15 +173,14 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 			}	
 		}
 	} 
-	return clusterCount; 
+	myClusterCount = clusterCount;
+	clusterCount = 0; 
+	return myClusterCount; 
 }
 
 int main(int argc, char* argv[]) {
 
-	int myCount = 0;
-	int myCount1 = 0;
-	int myCount2 = 0; 
-	int myCount3 = 0; 
+	int myCount = 0, myCount1 = 0, myCount2 = 0, myCount3 =0;
 
 	if(argc != 7) {
 		cout << endl; 
@@ -232,11 +231,11 @@ int main(int argc, char* argv[]) {
 				//cout << myCount1 << endl;  
 			}
 
-			if((myCount+myCount1) == 0){
+			if((myCount+myCount1+myCount2+myCount3) == 0){
 				cout << endl << "No conserved binding site clusters found" << endl << endl; 
 			}
 			else {
-				cout << endl << (myCount+myCount1) << " conserved binding sites found!!!" << endl << endl; 
+				cout << endl << (myCount+myCount1+myCount2+myCount3) << " conserved binding sites found!!!" << endl << endl; 
 			}
 		} 
 	}
