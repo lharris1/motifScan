@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <sstream>
 #include <ctype.h>
+#include <vector>
 #include <stdio.h> 
 
 using namespace std;
@@ -31,6 +32,63 @@ string fileToString(string fileName) {
 	}
 	myFile.close();
 	return fullSeq; 
+}
+
+vector<string>* getRevComps(string mot1, string mot2) {
+	vector<string>* bigList = new vector<string>; 
+	string new_mot1, new_mot2; 
+	//cout << mot1 << endl;
+	//cout << mot2 << endl; 
+
+	for(int i=0; i<mot1.size(); i++) {
+		stringstream ss;
+		string myLetter; 
+		char letter = mot1.at(i);
+		cout << "letter: " << letter << endl;
+		ss << letter;
+		ss >> myLetter; 
+		cout << "myLetter: " << myLetter << endl; 
+		//string myLetter = string(letter);
+		if(myLetter.compare("A")==0){
+			new_mot1.append("T");
+		}
+		else if(myLetter.compare("T")==0){
+			new_mot1.append("A");
+		}
+		else if(myLetter.compare("G")==0){
+			new_mot1.append("C");
+		}
+		else{
+			new_mot1.append("G");
+		}
+		myLetter = " ";
+	}
+	cout << new_mot1 << endl; 
+	bigList->push_back(new_mot1);
+
+	for(int k=0; k<mot2.size(); k++) {
+		stringstream kk; 
+		string myLetter1; 
+		char letter1 = mot2.at(k);
+		kk << letter1;
+		kk >> myLetter1;
+		if(myLetter1.compare("A")==0){
+			new_mot2.append("T");
+		}
+		else if(myLetter1.compare("T")==0){
+			new_mot2.append("A");
+		}
+		else if(myLetter1.compare("G")==0){
+			new_mot2.append("C");
+		}
+		else{
+			new_mot2.append("G");
+		}
+		myLetter1 = " ";
+	}
+	cout << new_mot2 << endl;
+	bigList->push_back(new_mot2);	
+	return bigList; 
 }
 
 int finderFunc(string seq, string motif, int myStart, int myStop) {
@@ -69,12 +127,15 @@ void outputClusterFound(int m1Ref, int m2Ref, int m1Query, int m2Query) {
 	return; 
 }
 
-int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
+int scanEngine(string file1, string file2, string mot1, string mot2, int winSize, int rev) {
 
 	string refSeq = fileToString(file1);
-	//cout << refSeq << endl; 
 	string querySeq = fileToString(file2);
 
+	if(rev==1){
+		vector<string>* revComps = getRevComps(mot1, mot2); 
+	}
+	
 	int start = 0; 
 	int my_stop = refSeq.size(); 
 	int stop = my_stop; 
@@ -82,10 +143,8 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	int index1 = mot2.size(); 
 
 	while(stop <= refSeq.size()) {
-		//cout << stop; 
  		int mot1_found = finderFunc(refSeq, mot1, start, (stop+index1)); 
 		if(mot1_found == 0){
-			//cout << "motif1 not found on refSeq " << endl; 
 			return 1; 
 		}
 		else {
@@ -128,10 +187,10 @@ int main(int argc, char* argv[]) {
 
 	int location; 
 
-	if(argc != 6) {
+	if(argc != 7) {
 		cout << endl; 
 		cout << "ERROR" << endl;
-		cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize]" << endl;
+		cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp]" << endl;
 		cout << "See README file for more" << endl << endl; 
 	}
 	else {
@@ -139,6 +198,7 @@ int main(int argc, char* argv[]) {
 		string f2 = string(argv[2]);
 		string m1 = string(argv[3]);
 		string m2 = string(argv[4]); 
+		int revComp = atoi(argv[6]);
 		int wSize = atoi(argv[5]); 
 		if(wSize == 0) {
 			cout << endl; 
@@ -153,10 +213,16 @@ int main(int argc, char* argv[]) {
 			printf("Motif1:  %s\n", m1.c_str());
 			printf("Motif2:  %s\n", m2.c_str());
 			printf("Window Size:  %d\n", wSize); 
+			if(revComp==0) {
+				printf("RevComp:    OFF");
+			}
+			else {
+				printf("RevComp:    ON");
+			}
 			cout << endl; 
 			cout << "----------------------------------------" << endl << endl; 
 			cout << "searching..." << endl << endl; 
-			location = scanEngine(f1, f2, m1, m2, wSize);
+			location = scanEngine(f1, f2, m1, m2, wSize, revComp);
 			if(location == 1){
 				cout << endl; 
 				printf("No conservation of motifs found\n"); 
