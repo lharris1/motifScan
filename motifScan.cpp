@@ -37,18 +37,14 @@ string fileToString(string fileName) {
 vector<string>* getRevComps(string mot1, string mot2) {
 	vector<string>* bigList = new vector<string>; 
 	string new_mot1, new_mot2; 
-	//cout << mot1 << endl;
-	//cout << mot2 << endl; 
 
 	for(int i=0; i<mot1.size(); i++) {
 		stringstream ss;
 		string myLetter; 
 		char letter = mot1.at(i);
-		cout << "letter: " << letter << endl;
 		ss << letter;
 		ss >> myLetter; 
-		cout << "myLetter: " << myLetter << endl; 
-		//string myLetter = string(letter);
+
 		if(myLetter.compare("A")==0){
 			new_mot1.append("T");
 		}
@@ -63,7 +59,6 @@ vector<string>* getRevComps(string mot1, string mot2) {
 		}
 		myLetter = " ";
 	}
-	cout << new_mot1 << endl; 
 	bigList->push_back(new_mot1);
 
 	for(int k=0; k<mot2.size(); k++) {
@@ -72,6 +67,7 @@ vector<string>* getRevComps(string mot1, string mot2) {
 		char letter1 = mot2.at(k);
 		kk << letter1;
 		kk >> myLetter1;
+
 		if(myLetter1.compare("A")==0){
 			new_mot2.append("T");
 		}
@@ -86,7 +82,6 @@ vector<string>* getRevComps(string mot1, string mot2) {
 		}
 		myLetter1 = " ";
 	}
-	cout << new_mot2 << endl;
 	bigList->push_back(new_mot2);	
 	return bigList; 
 }
@@ -127,20 +122,17 @@ void outputClusterFound(int m1Ref, int m2Ref, int m1Query, int m2Query) {
 	return; 
 }
 
-int scanEngine(string file1, string file2, string mot1, string mot2, int winSize, int rev) {
+int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 
 	string refSeq = fileToString(file1);
 	string querySeq = fileToString(file2);
-
-	if(rev==1){
-		vector<string>* revComps = getRevComps(mot1, mot2); 
-	}
 	
 	int start = 0; 
 	int my_stop = refSeq.size(); 
 	int stop = my_stop; 
 	int index = mot1.size();
 	int index1 = mot2.size(); 
+	int clusterCount = 0; 
 
 	while(stop <= refSeq.size()) {
  		int mot1_found = finderFunc(refSeq, mot1, start, (stop+index1)); 
@@ -168,10 +160,11 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 						stop = my_stop; 
 					}
 					else {
+						clusterCount += 1; 
 						outputClusterFound(mot1_found, mot2_found, mot1_found1, mot2_found1);
 						start = mot1_found+index;
 						if(stop> my_stop) {
-							return 1; 
+							return clusterCount; 
 						}
 						stop = my_stop; 
 
@@ -180,12 +173,15 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 			}	
 		}
 	} 
-	return 1; 
+	return clusterCount; 
 }
 
 int main(int argc, char* argv[]) {
 
-	int location; 
+	int myCount = 0;
+	int myCount1 = 0;
+	int myCount2 = 0; 
+	int myCount3 = 0; 
 
 	if(argc != 7) {
 		cout << endl; 
@@ -222,15 +218,25 @@ int main(int argc, char* argv[]) {
 			cout << endl; 
 			cout << "----------------------------------------" << endl << endl; 
 			cout << "searching..." << endl << endl; 
-			location = scanEngine(f1, f2, m1, m2, wSize, revComp);
-			if(location == 1){
-				cout << endl; 
-				printf("No conservation of motifs found\n"); 
-				cout << endl; 
+			myCount = scanEngine(f1, f2, m1, m2, wSize);
+			//cout << myCount << endl; 
+
+			if(revComp==1){
+				string newMot1, newMot2; 
+				vector<string>* revComps = getRevComps(m1, m2); 
+				newMot1 = revComps->at(0);
+				newMot2 = revComps->at(1);
+				myCount1 = scanEngine(f1, f2, newMot1, newMot2, wSize);
+				myCount2 = scanEngine(f1, f2, m1, newMot2, wSize);
+				myCount3 = scanEngine(f1, f2, newMot1, m2, wSize); 
+				//cout << myCount1 << endl;  
+			}
+
+			if((myCount+myCount1) == 0){
+				cout << endl << "No conserved binding site clusters found" << endl << endl; 
 			}
 			else {
-				cout << endl << endl; 
-				cout << "Conserved sites found!!" << endl << endl << endl; 
+				cout << endl << (myCount+myCount1) << " conserved binding sites found!!!" << endl << endl; 
 			}
 		} 
 	}
