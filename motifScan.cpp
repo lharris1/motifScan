@@ -60,15 +60,10 @@ string getRevComp(string mot1) {
 	return new_mot1; 
 }
 
-vector<string>* getWobbleMotifs(string mot) {
-	vector<string>* bigList = new vector<string>;
-	vector<string>* bigList_temp = new vector<string>; 
-	string newMot; 
+vector<string> getWobbleMotifs(string mot) {
+	vector<string> bigList, bigList_temp, newMotList, newMotList_temp;
 
 	for(int i=0; i<mot.size(); i++) {
-		//cout << mot.size() << endl; 
-		//cout << endl << endl; 
-		//cout << "back at top" << endl; 
 		stringstream kk; 
 		string myLetter;
 		char letter = mot.at(i);
@@ -76,79 +71,77 @@ vector<string>* getWobbleMotifs(string mot) {
 		kk >> myLetter; 
 
 		if(myLetter.compare("W")==0){
-			string newMotW = newMot;
-			string newMot1 = newMot;  
-			newMotW.append("T");
-			newMot1.append("A");
-			bigList_temp->push_back(newMotW);
-			bigList_temp->push_back(newMot1); 
+			for(int z=0; z<newMotList.size(); z++){
+				string newMotW = newMotList.at(z);
+				string newMot1 = newMotList.at(z);
+				newMotW.append("T");
+				newMot1.append("A");
+				bigList_temp.push_back(newMotW);
+				bigList_temp.push_back(newMot1); 
+			}
 		}
 		else if(myLetter.compare("S")==0){
-			string newMotS = newMot; 
-			string newMot2 = newMot; 
-			newMotS.append("C");
-			newMot2.append("G");
-			bigList_temp->push_back(newMotS);
-			bigList_temp->push_back(newMot2); 
+			for(int z=0; z<newMotList.size(); z++){
+				string newMotS = newMotList.at(z); 
+				string newMot2 = newMotList.at(z); 
+				newMotS.append("C");
+				newMot2.append("G");
+				bigList_temp.push_back(newMotS);
+				bigList_temp.push_back(newMot2); 
+			}
 		}
 		else if(myLetter.compare("K")==0) {
-			string newMotK = newMot; 
-			string newMot3 = newMot;
-			newMotK.append("G");
-			newMot3.append("T");
-			bigList_temp->push_back(newMotK);
-			//cout << "newMotK: " << newMotK << endl; 
-			bigList_temp->push_back(newMot3); 
-			//cout << "newMot3: " << newMot3 << endl; 
+			for(int z=0; z<newMotList.size(); z++){
+				string newMotK = newMotList.at(z); 
+				string newMot3 = newMotList.at(z);
+				newMotK.append("G");
+				newMot3.append("T");
+				bigList_temp.push_back(newMotK);
+				bigList_temp.push_back(newMot3); 
+			}
 		}
 		else if(myLetter.compare("M")==0) {
-			string newMotM = newMot;
-			string newMot4 = newMot; 
-			newMotM.append("A");
-			newMot4.append("C");
-			bigList_temp->push_back(newMotM);
-			bigList_temp->push_back(newMot4); 
+			for(int z=0; z<newMotList.size(); z++){
+				string newMotM = newMotList.at(z);
+				string newMot4 = newMotList.at(z); 
+				newMotM.append("A");
+				newMot4.append("C");
+				bigList_temp.push_back(newMotM);
+				bigList_temp.push_back(newMot4); 
+			}
 		}
 		else if(myLetter.compare("Y")==0) {
-			string newMotY = newMot; 
-			string newMot5 = newMot;
-			newMotY.append("C");
-			newMot5.append("T");
-			bigList_temp->push_back(newMotY);
-			bigList_temp->push_back(newMot5); 
-		}\
+			for(int z=0; z<newMotList.size(); z++){
+				string newMotY = newMotList.at(z); 
+				string newMot5 = newMotList.at(z);
+				newMotY.append("C");
+				newMot5.append("T");
+				bigList_temp.push_back(newMotY);
+				bigList_temp.push_back(newMot5); 
+			}
+		}
 		else if(myLetter.compare("R")==0) {
-			string newMotR = newMot; 
-			string newMot6 = newMot;
-			newMotR.append("A");
-			newMot6.append("G");
-			bigList_temp->push_back(newMotR);
-			bigList_temp->push_back(newMot6); 
+			for(int z=0; z<newMotList.size(); z++){
+				string newMotR = newMotList.at(z); 
+				string newMot6 = newMotList.at(z);
+				newMotR.append("A");
+				newMot6.append("G");
+				bigList_temp.push_back(newMotR);
+				bigList_temp.push_back(newMot6); 
+			}
 		}
-		//else if(myLetter.compare("N")=0) {
-		//	string newMotN1 = newMot; 
-		//	string newMotN2 = newMot; 
-		//	string newMotN3 = newMot; 
-		//	newMotN1.push_back("A");
-		//	newMotN2.push_back("C");
-		//	newMotN3.push_back("G");
-		//	newMot.push_back("T");
-		//}
 		else {
-			//cout << "in else" << endl; 
-			newMot.append(myLetter);
-			bigList->push_back(newMot); 
-		}
-		for(int m=0; m<bigList->size(); m++){
-			cout << bigList->at(m) << endl; 
+			for(int v=0; v<newMotList.size(); v++){
+				string newMot = newMotList.at(v);
+				newMot.append(myLetter);
+				newMotList_temp.push_back(newMot);
+				bigList_temp.push_back(newMot); 
+			}
 		}
 		bigList = bigList_temp; 
-		bigList_temp->clear(); 
-		//cout << bigList << endl;
-
-		//for(int m=0; m<bigList->size(); m++){
-		//	cout << bigList->at(m) << endl; 
-		//}
+		bigList_temp.clear(); 
+		newMotList = newMotList_temp;
+		newMotList_temp.clear(); 
 	}
 	return bigList; 
 }
@@ -299,31 +292,30 @@ int main(int argc, char* argv[]) {
 		printStartUp(f1, f2, m1, m2, wSize, revComp, wobble);
 
 		if(wobble==1){
-			vector<string>* wobbleMots1 = getWobbleMotifs(m1); 
-			vector<string>* wobbleMots2 = getWobbleMotifs(m2);
-			for(int i=0; i<wobbleMots1->size(); i++){
-				string newMot1 = wobbleMots1->at(i); 
-				for(int k=0; k<wobbleMots2->size(); k++){
-					string newMot2 = wobbleMots2->at(k);
+			vector<string> wobbleMots1 = getWobbleMotifs(m1); 
+			vector<string> wobbleMots2 = getWobbleMotifs(m2);
+			for(int i=0; i<wobbleMots1.size(); i++){
+				string newMot1 = wobbleMots1.at(i); 
+				for(int k=0; k<wobbleMots2.size(); k++){
+					string newMot2 = wobbleMots2.at(k);
 					int temp = scanEngine(f1,f2,newMot1,newMot2, wSize);
 					myCount = myCount+temp; 
 				}
 			}
 			if(revComp==1){
-				vector<string>* revCompList1 = new vector<string>; 
-				vector<string>* revCompList2 = new vector<string>; 
-				for(int j=0; j<wobbleMots1->size(); j++) {
-					string revComp1 = getRevComp(wobbleMots1->at(j));
-					revCompList1->push_back(revComp1);
+				vector<string> revCompList1, revCompList2;
+				for(int j=0; j<wobbleMots1.size(); j++) {
+					string revComp1 = getRevComp(wobbleMots1.at(j));
+					revCompList1.push_back(revComp1);
 				}
-				for(int l=0; l<wobbleMots2->size(); l++) {
-					string revComp2 = getRevComp(wobbleMots2->at(l));
-					revCompList2->push_back(revComp2);
+				for(int l=0; l<wobbleMots2.size(); l++) {
+					string revComp2 = getRevComp(wobbleMots2.at(l));
+					revCompList2.push_back(revComp2);
 				}
-				for(int m=0; m<revCompList1->size(); m++){
-					string myMot1 = revCompList1->at(m);
-					for(int n=0; n<revCompList2->size(); n++){
-						string myMot2 = revCompList2->at(n);
+				for(int m=0; m<revCompList1.size(); m++){
+					string myMot1 = revCompList1.at(m);
+					for(int n=0; n<revCompList2.size(); n++){
+						string myMot2 = revCompList2.at(n);
 						int temp3 = scanEngine(f1,f2,myMot1,myMot2, wSize);
 						myCount = myCount+temp3;
 					}
