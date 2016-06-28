@@ -61,7 +61,8 @@ string getRevComp(string mot1) {
 }
 
 vector<string> getWobbleMotifs(string mot) {
-	vector<string> bigList, bigList_temp, newMotList, newMotList_temp;
+	vector<string> bigList, bigList_temp, newMotList, newMotList_temp, toReturn;
+	//cout << "in getWobbleMotifs" << endl; 
 
 	for(int i=0; i<mot.size(); i++) {
 		stringstream kk; 
@@ -78,6 +79,8 @@ vector<string> getWobbleMotifs(string mot) {
 				newMot1.append("A");
 				bigList_temp.push_back(newMotW);
 				bigList_temp.push_back(newMot1); 
+				newMotList_temp.push_back(newMotW);
+				newMotList_temp.push_back(newMot1);
 			}
 		}
 		else if(myLetter.compare("S")==0){
@@ -88,9 +91,13 @@ vector<string> getWobbleMotifs(string mot) {
 				newMot2.append("G");
 				bigList_temp.push_back(newMotS);
 				bigList_temp.push_back(newMot2); 
+				newMotList_temp.push_back(newMotS);
+				newMotList_temp.push_back(newMot2);
 			}
 		}
 		else if(myLetter.compare("K")==0) {
+			//cout << "myLetter = K" << endl; 
+			//cout << newMotList.size() << endl; 
 			for(int z=0; z<newMotList.size(); z++){
 				string newMotK = newMotList.at(z); 
 				string newMot3 = newMotList.at(z);
@@ -98,6 +105,10 @@ vector<string> getWobbleMotifs(string mot) {
 				newMot3.append("T");
 				bigList_temp.push_back(newMotK);
 				bigList_temp.push_back(newMot3); 
+				newMotList_temp.push_back(newMotK);
+				newMotList_temp.push_back(newMot3); 
+				//cout << newMotK << endl;
+				//cout << newMot3 << endl; 
 			}
 		}
 		else if(myLetter.compare("M")==0) {
@@ -108,6 +119,8 @@ vector<string> getWobbleMotifs(string mot) {
 				newMot4.append("C");
 				bigList_temp.push_back(newMotM);
 				bigList_temp.push_back(newMot4); 
+				newMotList_temp.push_back(newMotM);
+				newMotList_temp.push_back(newMot4);
 			}
 		}
 		else if(myLetter.compare("Y")==0) {
@@ -118,6 +131,8 @@ vector<string> getWobbleMotifs(string mot) {
 				newMot5.append("T");
 				bigList_temp.push_back(newMotY);
 				bigList_temp.push_back(newMot5); 
+				newMotList_temp.push_back(newMotY);
+				newMotList_temp.push_back(newMot5);
 			}
 		}
 		else if(myLetter.compare("R")==0) {
@@ -128,14 +143,21 @@ vector<string> getWobbleMotifs(string mot) {
 				newMot6.append("G");
 				bigList_temp.push_back(newMotR);
 				bigList_temp.push_back(newMot6); 
+				newMotList_temp.push_back(newMotR);
+				newMotList_temp.push_back(newMot6);
 			}
 		}
 		else {
+			//cout << "in else!!" << endl; 
+			//cout << newMotList.size() << endl; 
+			string newMot0 = myLetter; 
+			newMotList_temp.push_back(newMot0); 
 			for(int v=0; v<newMotList.size(); v++){
 				string newMot = newMotList.at(v);
 				newMot.append(myLetter);
 				newMotList_temp.push_back(newMot);
 				bigList_temp.push_back(newMot); 
+				//cout << newMot << endl; 
 			}
 		}
 		bigList = bigList_temp; 
@@ -143,7 +165,17 @@ vector<string> getWobbleMotifs(string mot) {
 		newMotList = newMotList_temp;
 		newMotList_temp.clear(); 
 	}
-	return bigList; 
+	for(int y=0; y<bigList.size(); y++){
+		string item = bigList.at(y);
+		if(item.size()==mot.size()){
+			toReturn.push_back(item);
+		}
+	}
+	for(int b=0; b<toReturn.size(); b++){
+		cout << toReturn.at(b) << endl;
+	}
+
+	return toReturn; 
 }
 
 int finderFunc(string seq, string motif, int myStart, int myStop) {
@@ -292,6 +324,7 @@ int main(int argc, char* argv[]) {
 		printStartUp(f1, f2, m1, m2, wSize, revComp, wobble);
 
 		if(wobble==1){
+			//cout << "im here!!!" << endl; 
 			vector<string> wobbleMots1 = getWobbleMotifs(m1); 
 			vector<string> wobbleMots2 = getWobbleMotifs(m2);
 			for(int i=0; i<wobbleMots1.size(); i++){
@@ -337,5 +370,46 @@ int main(int argc, char* argv[]) {
 		}
 	} 
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////     PLAYING AROUND HERE     //////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+int main(int argc, char* argv[]) {
+
+	vector<string> wobbleMots1 = getWobbleMotifs(m1); 
+	vector<string> wobbleMots2 = getWobbleMotifs(m2);
+}
+
+vector<string> getWobbleMotifs(string mot) {
+	
+	if(myLetter.compare("M")==0) {
+		for(int z=0; z<newMotList.size(); z++){
+			string newMotM = newMotList.at(z);
+			string newMot4 = newMotList.at(z); 
+			newMotM.append("A");
+			newMot4.append("C");
+			bigList_temp.push_back(newMotM);
+			bigList_temp.push_back(newMot4); 
+		}
+	}
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
