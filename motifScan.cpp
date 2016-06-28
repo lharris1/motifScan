@@ -62,13 +62,13 @@ string getRevComp(string mot1) {
 
 vector<string>* getWobbleMotifs(string mot) {
 	vector<string>* bigList = new vector<string>;
-	vector<string>* bigList1 = new vector<string>; 
+	vector<string>* bigList_temp = new vector<string>; 
 	string newMot; 
 
 	for(int i=0; i<mot.size(); i++) {
 		//cout << mot.size() << endl; 
-		cout << endl << endl; 
-		cout << "back at top" << endl; 
+		//cout << endl << endl; 
+		//cout << "back at top" << endl; 
 		stringstream kk; 
 		string myLetter;
 		char letter = mot.at(i);
@@ -80,50 +80,50 @@ vector<string>* getWobbleMotifs(string mot) {
 			string newMot1 = newMot;  
 			newMotW.append("T");
 			newMot1.append("A");
-			bigList->push_back(newMotW);
-			bigList->push_back(newMot1); 
+			bigList_temp->push_back(newMotW);
+			bigList_temp->push_back(newMot1); 
 		}
 		else if(myLetter.compare("S")==0){
 			string newMotS = newMot; 
 			string newMot2 = newMot; 
 			newMotS.append("C");
 			newMot2.append("G");
-			bigList->push_back(newMotS);
-			bigList->push_back(newMot2); 
+			bigList_temp->push_back(newMotS);
+			bigList_temp->push_back(newMot2); 
 		}
 		else if(myLetter.compare("K")==0) {
 			string newMotK = newMot; 
 			string newMot3 = newMot;
 			newMotK.append("G");
 			newMot3.append("T");
-			bigList->push_back(newMotK);
-			cout << "newMotK: " << newMotK << endl; 
-			bigList->push_back(newMot3); 
-			cout << "newMot3: " << newMot3 << endl; 
+			bigList_temp->push_back(newMotK);
+			//cout << "newMotK: " << newMotK << endl; 
+			bigList_temp->push_back(newMot3); 
+			//cout << "newMot3: " << newMot3 << endl; 
 		}
 		else if(myLetter.compare("M")==0) {
 			string newMotM = newMot;
 			string newMot4 = newMot; 
 			newMotM.append("A");
 			newMot4.append("C");
-			bigList->push_back(newMotM);
-			bigList->push_back(newMot4); 
+			bigList_temp->push_back(newMotM);
+			bigList_temp->push_back(newMot4); 
 		}
 		else if(myLetter.compare("Y")==0) {
 			string newMotY = newMot; 
 			string newMot5 = newMot;
 			newMotY.append("C");
 			newMot5.append("T");
-			bigList->push_back(newMotY);
-			bigList->push_back(newMot5); 
-		}
+			bigList_temp->push_back(newMotY);
+			bigList_temp->push_back(newMot5); 
+		}\
 		else if(myLetter.compare("R")==0) {
 			string newMotR = newMot; 
 			string newMot6 = newMot;
 			newMotR.append("A");
 			newMot6.append("G");
-			bigList->push_back(newMotR);
-			bigList->push_back(newMot6); 
+			bigList_temp->push_back(newMotR);
+			bigList_temp->push_back(newMot6); 
 		}
 		//else if(myLetter.compare("N")=0) {
 		//	string newMotN1 = newMot; 
@@ -135,21 +135,22 @@ vector<string>* getWobbleMotifs(string mot) {
 		//	newMot.push_back("T");
 		//}
 		else {
-			cout << "in else" << endl; 
+			//cout << "in else" << endl; 
 			newMot.append(myLetter);
 			bigList->push_back(newMot); 
 		}
-		cout << bigList << endl;
-	}
-
-	for(int i=0; i<bigList->size(); i++){
-		string entry = bigList->at(i); 
-		if(entry.size()==mot.size()){
-			bigList1->push_back(entry);
-			//cout << entry << endl; 
+		for(int m=0; m<bigList->size(); m++){
+			cout << bigList->at(m) << endl; 
 		}
+		bigList = bigList_temp; 
+		bigList_temp->clear(); 
+		//cout << bigList << endl;
+
+		//for(int m=0; m<bigList->size(); m++){
+		//	cout << bigList->at(m) << endl; 
+		//}
 	}
-	return bigList1; 
+	return bigList; 
 }
 
 int finderFunc(string seq, string motif, int myStart, int myStop) {
