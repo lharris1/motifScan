@@ -34,10 +34,8 @@ string fileToString(string fileName) {
 	return fullSeq; 
 }
 
-vector<string>* getRevComps(string mot1, string mot2) {
-	vector<string>* bigList = new vector<string>; 
-	string new_mot1, new_mot2; 
-
+string getRevComp(string mot1) {
+	string new_mot1; 
 	for(int i=0; i<mot1.size(); i++) {
 		stringstream ss;
 		string myLetter; 
@@ -59,31 +57,91 @@ vector<string>* getRevComps(string mot1, string mot2) {
 		}
 		myLetter = " ";
 	}
-	bigList->push_back(new_mot1);
+	return new_mot1; 
+}
 
-	for(int k=0; k<mot2.size(); k++) {
+vector<string>* getWobbleMotifs(string mot) {
+	vector<string>* bigList = new vector<string>;
+	vector<string>* bigList1 = new vector<string>; 
+	string newMot; 
+
+	for(int i=0; i<mot.size(); i++) {
 		stringstream kk; 
-		string myLetter1; 
-		char letter1 = mot2.at(k);
-		kk << letter1;
-		kk >> myLetter1;
+		string myLetter;
+		char letter = mot.at(i);
+		kk << letter; 
+		kk >> myLetter; 
 
-		if(myLetter1.compare("A")==0){
-			new_mot2.append("T");
+		if(myLetter.compare("W")==0){
+			string newMotW = newMot;
+			string newMot1 = newMot;  
+			newMotW.append("T");
+			newMot1.append("A");
+			bigList->push_back(newMotW);
+			bigList->push_back(newMot1); 
 		}
-		else if(myLetter1.compare("T")==0){
-			new_mot2.append("A");
+		else if(myLetter.compare("S")==0){
+			string newMotS = newMot; 
+			string newMot2 = newMot; 
+			newMotS.append("C");
+			newMot2.append("G");
+			bigList->push_back(newMotS);
+			bigList->push_back(newMot2); 
 		}
-		else if(myLetter1.compare("G")==0){
-			new_mot2.append("C");
+		else if(myLetter.compare("K")==0) {
+			string newMotK = newMot; 
+			string newMot3 = newMot;
+			newMotK.append("G");
+			newMot3.append("T");
+			bigList->push_back(newMotK);
+			bigList->push_back(newMot3); 
 		}
-		else{
-			new_mot2.append("G");
+		else if(myLetter.compare("M")==0) {
+			string newMotM = newMot;
+			string newMot4 = newMot; 
+			newMotM.append("A");
+			newMot4.append("C");
+			bigList->push_back(newMotM);
+			bigList->push_back(newMot4); 
 		}
-		myLetter1 = " ";
+		else if(myLetter.compare("Y")==0) {
+			string newMotY = newMot; 
+			string newMot5 = newMot;
+			newMotY.append("C");
+			newMot5.append("T");
+			bigList->push_back(newMotY);
+			bigList->push_back(newMot5); 
+		}
+		else if(myLetter.compare("R")==0) {
+			string newMotR = newMot; 
+			string newMot6 = newMot;
+			newMotR.append("A");
+			newMot6.append("G");
+			bigList->push_back(newMotR);
+			bigList->push_back(newMot6); 
+		}
+		//else if(myLetter.compare("N")=0) {
+		//	string newMotN1 = newMot; 
+		//	string newMotN2 = newMot; 
+		//	string newMotN3 = newMot; 
+		//	newMotN1.push_back("A");
+		//	newMotN2.push_back("C");
+		//	newMotN3.push_back("G");
+		//	newMot.push_back("T");
+		//}
+		else {
+			newMot.append("myLetter");
+			bigList->push_back(newMot); 
+		}
 	}
-	bigList->push_back(new_mot2);	
-	return bigList; 
+
+	for(int i=0; i<bigList->size(); i++){
+		string entry = bigList->at(i); 
+		if(entry.size()==mot.size()){
+			bigList1->push_back(entry);
+		}
+	}
+	return bigList1; 
 }
 
 int finderFunc(string seq, string motif, int myStart, int myStop) {
@@ -178,14 +236,45 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	return myClusterCount; 
 }
 
-int main(int argc, char* argv[]) {
+void printStartUp(string myFile1, string myFile2, string myMotif1, string myMotif2, int myWinSize, int myRevComp, int myWobble){
+		
+		if(myWinSize == 0) {
+			cout << endl; 
+			cout << "ERROR" << endl;
+			cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp Y/N] [wobble Y/N]" << endl;
+			cout << "See README file for more" << endl << endl; 
+		} 
+		else {
+			cout << endl;
+			printf("Reference Seq:  %s\n", myFile1.c_str()); 
+			printf("Query Seq:  %s\n", myFile2.c_str());
+			printf("Motif1:  %s\n", myMotif1.c_str());
+			printf("Motif2:  %s\n", myMotif2.c_str());
+			printf("Window Size:  %d\n", myWinSize); 
+			if(myRevComp==0) {
+				printf("RevComp:    OFF");
+			}
+			else {
+				printf("RevComp:    ON");
+			}
+			if(myWobble==0) {
+				printf("WobbleBase:   OFF");
+			}
+			else{
+				printf("WobbleBase:   ON");
+			}
+			cout << endl; 
+			cout << "----------------------------------------" << endl << endl; 
+			cout << "searching..." << endl << endl; 
+		}
+}
 
-	int myCount = 0, myCount1 = 0, myCount2 = 0, myCount3 =0;
+int main(int argc, char* argv[]) {
 
 	if(argc != 7) {
 		cout << endl; 
 		cout << "ERROR" << endl;
-		cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp]" << endl;
+		cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp Y/N]" << endl;
 		cout << "See README file for more" << endl << endl; 
 	}
 	else {
@@ -193,52 +282,59 @@ int main(int argc, char* argv[]) {
 		string f2 = string(argv[2]);
 		string m1 = string(argv[3]);
 		string m2 = string(argv[4]); 
+		int wSize = atoi(argv[5]);
 		int revComp = atoi(argv[6]);
-		int wSize = atoi(argv[5]); 
-		if(wSize == 0) {
-			cout << endl; 
-			cout << "ERROR" << endl;
-			cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize]" << endl;
-			cout << "See README file for more" << endl << endl; 
-		} 
-		else {
-			cout << endl;
-			printf("Reference Seq:  %s\n", f1.c_str()); 
-			printf("Query Seq:  %s\n", f2.c_str());
-			printf("Motif1:  %s\n", m1.c_str());
-			printf("Motif2:  %s\n", m2.c_str());
-			printf("Window Size:  %d\n", wSize); 
-			if(revComp==0) {
-				printf("RevComp:    OFF");
-			}
-			else {
-				printf("RevComp:    ON");
-			}
-			cout << endl; 
-			cout << "----------------------------------------" << endl << endl; 
-			cout << "searching..." << endl << endl; 
-			myCount = scanEngine(f1, f2, m1, m2, wSize);
-			//cout << myCount << endl; 
+		int wobble = atoi(argv[7]); 
+		int myCount = 0; 
 
+		printStartUp(f1, f2, m1, m2, wSize, revComp, wobble);
+
+		if(wobble==1){
+			vector<string>* wobbleMots1 = getWobbleMotifs(m1); 
+			vector<string>* wobbleMots2 = getWobbleMotifs(m2);
+			for(int i=0; i<wobbleMots1->size(); i++){
+				string newMot1 = wobbleMots1->at(i); 
+				for(int k=0; k<wobbleMots2->size(); k++){
+					string newMot2 = wobbleMots2->at(k);
+					int temp = scanEngine(f1,f2,newMot1,newMot2, wSize);
+					myCount = myCount+temp; 
+				}
+			}
 			if(revComp==1){
-				string newMot1, newMot2; 
-				vector<string>* revComps = getRevComps(m1, m2); 
-				newMot1 = revComps->at(0);
-				newMot2 = revComps->at(1);
-				myCount1 = scanEngine(f1, f2, newMot1, newMot2, wSize);
-				myCount2 = scanEngine(f1, f2, m1, newMot2, wSize);
-				myCount3 = scanEngine(f1, f2, newMot1, m2, wSize); 
-				//cout << myCount1 << endl;  
+				vector<string>* revCompList1 = new vector<string>; 
+				vector<string>* revCompList2 = new vector<string>; 
+				for(int j=0; j<wobbleMots1->size(); j++) {
+					string revComp1 = getRevComp(wobbleMots1->at(j));
+					revCompList1->push_back(revComp1);
+				}
+				for(int l=0; l<wobbleMots2->size(); l++) {
+					string revComp2 = getRevComp(wobbleMots2->at(l));
+					revCompList2->push_back(revComp2);
+				}
+				for(int m=0; m<revCompList1->size(); m++){
+					string myMot1 = revCompList1->at(m);
+					for(int n=0; n<revCompList2->size(); n++){
+						string myMot2 = revCompList2->at(n);
+						int temp3 = scanEngine(f1,f2,myMot1,myMot2, wSize);
+						myCount = myCount+temp3;
+					}
+				}
 			}
-
-			if((myCount+myCount1+myCount2+myCount3) == 0){
-				cout << endl << "No conserved binding site clusters found" << endl << endl; 
-			}
-			else {
-				cout << endl << (myCount+myCount1+myCount2+myCount3) << " conserved binding sites found!!!" << endl << endl; 
-			}
-		} 
-	}
+		}
+		if(revComp==1){
+			string revComp1 = getRevComp(m1); 
+			string revComp2 = getRevComp(m2);
+			int temp4 = scanEngine(f1, f2, revComp1, revComp2, wSize);
+			myCount = myCount + temp4; 
+		}
+		myCount = scanEngine(f1, f2, m1, m2, wSize);
+		if(myCount == 0){
+			cout << endl << "No conserved binding site clusters found" << endl << endl; 
+		}
+		else {
+			cout << endl << myCount << " conserved binding sites found!!!" << endl << endl; 
+		}
+	} 
 }
 
 
