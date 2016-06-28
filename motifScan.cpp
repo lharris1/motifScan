@@ -66,6 +66,9 @@ vector<string>* getWobbleMotifs(string mot) {
 	string newMot; 
 
 	for(int i=0; i<mot.size(); i++) {
+		//cout << mot.size() << endl; 
+		cout << endl << endl; 
+		cout << "back at top" << endl; 
 		stringstream kk; 
 		string myLetter;
 		char letter = mot.at(i);
@@ -94,7 +97,9 @@ vector<string>* getWobbleMotifs(string mot) {
 			newMotK.append("G");
 			newMot3.append("T");
 			bigList->push_back(newMotK);
+			cout << "newMotK: " << newMotK << endl; 
 			bigList->push_back(newMot3); 
+			cout << "newMot3: " << newMot3 << endl; 
 		}
 		else if(myLetter.compare("M")==0) {
 			string newMotM = newMot;
@@ -130,15 +135,18 @@ vector<string>* getWobbleMotifs(string mot) {
 		//	newMot.push_back("T");
 		//}
 		else {
-			newMot.append("myLetter");
+			cout << "in else" << endl; 
+			newMot.append(myLetter);
 			bigList->push_back(newMot); 
 		}
+		cout << bigList << endl;
 	}
 
 	for(int i=0; i<bigList->size(); i++){
 		string entry = bigList->at(i); 
 		if(entry.size()==mot.size()){
 			bigList1->push_back(entry);
+			//cout << entry << endl; 
 		}
 	}
 	return bigList1; 

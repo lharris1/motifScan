@@ -12,8 +12,8 @@ CONFIGURE
 	type 'make'
 
 INPUT
-   refSeq - reference sequence file, in FASTA format
-   querySeq - query sequence file, in FASTA format
+   refSeq - reference sequence file, in FASTA format (can be specified as a compete path)
+   querySeq - query sequence file, in FASTA format (can be specified as a complete path)
    mot1 - first motif to search for 
    mot2 - second motif to search for 
    winSize - allowable sequence gap between two motifs
