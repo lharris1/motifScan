@@ -4,6 +4,13 @@
  Swarthmore College
  June 2016
 
+CONFIGURE 
+	download source code as a tar/zip 
+	untar/unzip to create motifScan directory
+	(alternatively) use git clone to create motifScan directory
+	cd into /motifScan dir
+	type 'make'
+
 INPUT
    refSeq - reference sequence file, in FASTA format
    querySeq - query sequence file, in FASTA format
@@ -23,6 +30,13 @@ INPUT
                          R -> "A,G"
                          N -> "A,C,G,T"
                     (O configures OFF, 1 configures ON)
+
+EXAMPLE 
+	./motifScan myFile1.fasta myFile2.fasta GGAT ATTA 20 1 0
+
+	Will search myFile1 and myFile 2 for conserved binding site clusters containing both
+	GGAT and ATTA motifs within a 20 base pair window. Will also search for conserved 
+	clusters containing the reverse complements, CCTA and TAAT
 
 SEARCH ALGORITHM 
  	1. scan refSeq for mot1

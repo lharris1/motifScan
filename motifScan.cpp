@@ -252,16 +252,16 @@ void printStartUp(string myFile1, string myFile2, string myMotif1, string myMoti
 			printf("Motif2:  %s\n", myMotif2.c_str());
 			printf("Window Size:  %d\n", myWinSize); 
 			if(myRevComp==0) {
-				printf("RevComp:    OFF");
+				printf("RevComp:  OFF\n");
 			}
 			else {
-				printf("RevComp:    ON");
+				printf("RevComp:  ON\n");
 			}
 			if(myWobble==0) {
-				printf("WobbleBase:   OFF");
+				printf("WobbleBase:  OFF\n");
 			}
 			else{
-				printf("WobbleBase:   ON");
+				printf("WobbleBase:  ON\n");
 			}
 			cout << endl; 
 			cout << "----------------------------------------" << endl << endl; 
@@ -271,10 +271,10 @@ void printStartUp(string myFile1, string myFile2, string myMotif1, string myMoti
 
 int main(int argc, char* argv[]) {
 
-	if(argc != 7) {
+	if(argc != 8) {
 		cout << endl; 
 		cout << "ERROR" << endl;
-		cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp Y/N]" << endl;
+		cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp Y/N] [wobble Y/N]" << endl;
 		cout << "See README file for more" << endl << endl; 
 	}
 	else {
