@@ -10,6 +10,19 @@ INPUT
    mot1 - first motif to search for 
    mot2 - second motif to search for 
    winSize - allowable sequence gap between two motifs
+   revComp Y/N - if ON, program will look for motifClusters with reverse complements
+                 of the input motifs, in addition to the motifs as entered
+                 (O configures OFF, 1 configures ON)
+   wobbleBase Y/N - if ON, tells program to look for motifs in accordance to the 
+                    conventional base pair wobble rules:
+                         W -> "A,T"
+                         S -> "C,G"
+                         K -> "G,T"
+                         M -> "A,C"
+                         Y -> "C,T"
+                         R -> "A,G"
+                         N -> "A,C,G,T"
+                    (O configures OFF, 1 configures ON)
 
 SEARCH ALGORITHM 
  	1. scan refSeq for mot1
