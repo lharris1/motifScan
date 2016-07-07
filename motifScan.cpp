@@ -62,7 +62,6 @@ string getRevComp(string mot1) {
 
 vector<string> getWobbleMotifs(string mot) {
 	vector<string> bigList, bigList_temp, newMotList, newMotList_temp, toReturn;
-	//cout << "in getWobbleMotifs" << endl; 
 
 	for(int i=0; i<mot.size(); i++) {
 		stringstream kk; 
@@ -96,8 +95,6 @@ vector<string> getWobbleMotifs(string mot) {
 			}
 		}
 		else if(myLetter.compare("K")==0) {
-			//cout << "myLetter = K" << endl; 
-			//cout << newMotList.size() << endl; 
 			for(int z=0; z<newMotList.size(); z++){
 				string newMotK = newMotList.at(z); 
 				string newMot3 = newMotList.at(z);
@@ -107,8 +104,6 @@ vector<string> getWobbleMotifs(string mot) {
 				bigList_temp.push_back(newMot3); 
 				newMotList_temp.push_back(newMotK);
 				newMotList_temp.push_back(newMot3); 
-				//cout << newMotK << endl;
-				//cout << newMot3 << endl; 
 			}
 		}
 		else if(myLetter.compare("M")==0) {
@@ -148,8 +143,6 @@ vector<string> getWobbleMotifs(string mot) {
 			}
 		}
 		else {
-			//cout << "in else!!" << endl; 
-			//cout << newMotList.size() << endl; 
 			string newMot0 = myLetter; 
 			newMotList_temp.push_back(newMot0); 
 			for(int v=0; v<newMotList.size(); v++){
@@ -157,7 +150,6 @@ vector<string> getWobbleMotifs(string mot) {
 				newMot.append(myLetter);
 				newMotList_temp.push_back(newMot);
 				bigList_temp.push_back(newMot); 
-				//cout << newMot << endl; 
 			}
 		}
 		bigList = bigList_temp; 
@@ -170,9 +162,6 @@ vector<string> getWobbleMotifs(string mot) {
 		if(item.size()==mot.size()){
 			toReturn.push_back(item);
 		}
-	}
-	for(int b=0; b<toReturn.size(); b++){
-		cout << toReturn.at(b) << endl;
 	}
 
 	return toReturn; 
@@ -324,7 +313,6 @@ int main(int argc, char* argv[]) {
 		printStartUp(f1, f2, m1, m2, wSize, revComp, wobble);
 
 		if(wobble==1){
-			//cout << "im here!!!" << endl; 
 			vector<string> wobbleMots1 = getWobbleMotifs(m1); 
 			vector<string> wobbleMots2 = getWobbleMotifs(m2);
 			for(int i=0; i<wobbleMots1.size(); i++){
@@ -361,7 +349,8 @@ int main(int argc, char* argv[]) {
 			int temp4 = scanEngine(f1, f2, revComp1, revComp2, wSize);
 			myCount = myCount + temp4; 
 		}
-		myCount = scanEngine(f1, f2, m1, m2, wSize);
+		int temp5 = scanEngine(f1, f2, m1, m2, wSize);
+		myCount = myCount + temp5; 
 		if(myCount == 0){
 			cout << endl << "No conserved binding site clusters found" << endl << endl; 
 		}
@@ -370,32 +359,6 @@ int main(int argc, char* argv[]) {
 		}
 	} 
 }
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////     PLAYING AROUND HERE     //////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-int main(int argc, char* argv[]) {
-
-	vector<string> wobbleMots1 = getWobbleMotifs(m1); 
-	vector<string> wobbleMots2 = getWobbleMotifs(m2);
-}
-
-vector<string> getWobbleMotifs(string mot) {
-	
-	if(myLetter.compare("M")==0) {
-		for(int z=0; z<newMotList.size(); z++){
-			string newMotM = newMotList.at(z);
-			string newMot4 = newMotList.at(z); 
-			newMotM.append("A");
-			newMot4.append("C");
-			bigList_temp.push_back(newMotM);
-			bigList_temp.push_back(newMot4); 
-		}
-	}
-}
-*/
 
 
 
