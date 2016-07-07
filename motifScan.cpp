@@ -208,7 +208,7 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	string refSeq = fileToString(file1);
 	string querySeq = fileToString(file2);
 	
-	int start = 0; 
+	int start = 0, memVar = 0, memVar1 = 0; 
 	int my_stop = refSeq.size(); 
 	int stop = my_stop; 
 	int index = mot1.size();
@@ -220,7 +220,7 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 		if(mot1_found == 0){
 			break; 
 		}
-		else {
+		else {                                   //mot1 found on ref
 			start = mot1_found - winSize;
 			stop = mot1_found + winSize;  
 			int mot2_found = finderFunc(refSeq, mot2, start, stop); 
@@ -228,27 +228,33 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 				start = mot1_found+index; 
 				stop = my_stop; 
 			}
-			else {
+			else {                               //mot2 found on ref
 				int mot1_found1 = finderFunc(querySeq, mot1, start, stop);
 				if(mot1_found1 == 0){
 					start = mot1_found+index; 
 					stop = my_stop; 
 				}
-				else {
+				else {                           //mot1 found on query...almost there...
 					int mot2_found1 = finderFunc(querySeq, mot2, start, stop); 
 					if(mot2_found1 == 0){
 						start = mot1_found+index; 
 						stop = my_stop; 
 					}
-					else {
-						clusterCount += 1; 
-						outputClusterFound(mot1_found, mot2_found, mot1_found1, mot2_found1);
-						start = mot1_found+index;
-						if(stop> my_stop) {
+					else {                    //mot2 found on query....success!!!
+						if((mot1_found1 == memVar) && (mot2_found1 == memVar1)){
 							break; 
+						}  
+						else {                //mot1 and mot2 have not been found on query before
+							clusterCount += 1; 
+							outputClusterFound(mot1_found, mot2_found, mot1_found1, mot2_found1);
+							start = mot1_found+index;
+							if(stop> my_stop) {
+								break; 
+							}
+							stop = my_stop; 
+							memVar = mot1_found1; 
+							memVar1 =  mot2_found1; 
 						}
-						stop = my_stop; 
-
 					}
 				}
 			}	
