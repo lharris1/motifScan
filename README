@@ -28,7 +28,7 @@ INPUT
                          M -> "A,C"
                          Y -> "C,T"
                          R -> "A,G"
-                         N -> "A,C,G,T"
+                         N -> "A,C,G,T" //still not working!!!
                     (O configures OFF, 1 configures ON)
 
 EXAMPLE 
