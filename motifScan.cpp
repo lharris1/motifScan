@@ -305,10 +305,51 @@ void printStartUp(string myFile1, string myFile2, string myMotif1, string myMoti
 }
 
 void getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize, int myRevComp, int myWobble){
-	//TODO: implement me here!!!
+
+	string refSeq = fileToString(myFile1);
+	string querySeq = fileToString(myFile2);
 	string myAlt = "ABCD"; 
+	
+	int start = 0;
+	int my_stop = refSeq.size(); 
+	int stop = my_stop; 
+	int index = myMotif1.size();
+	int refStart, refStop, qStart, qStop; 
+
 	cout << "----------------------------------------" << endl << endl; 
 	cout << "Potential alternative co-motifs:" << endl; 
+
+	while(stop <= refSeq.size()) {
+ 		int mot1_found = finderFunc(refSeq, myMotif1, start, (stop+index)); 
+		if(mot1_found == 0){
+			break; 
+		}
+		else {                                   //mot1 found on ref
+			start = mot1_found - myWinSize;
+			stop = mot1_found + myWinSize;  
+			refStart = start; 
+			refStop = stop; 
+			int mot1_found1 = finderFunc(querySeq, myMotif1, start, stop); 
+			if(mot1_found1 == 0){
+				start = mot1_found+index; 
+				stop = my_stop; 
+			}
+			else {                               //mot1 found on query
+				qStart = mot1_found1-myWinSize; 
+				qStop = mot1_found1+myWinSize; 
+				
+				for(int n=refStart; n<refStop; n++) {
+					string altMot = refSeq.substr(n,4); 
+					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
+						cout << altMot << endl;
+					}
+				}
+				myAlt = "AAAA"; 
+				start = mot1_found+index; 
+				stop = my_stop; 
+			}
+		}
+	}
 	if(myAlt=="ABCD"){
 		cout << "NONE!!" << endl << endl; 
 	}
