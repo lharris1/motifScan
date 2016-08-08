@@ -305,7 +305,7 @@ void printStartUp(string myFile1, string myFile2, string myMotif1, string myMoti
 		}
 }
 
-void getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize, int myRevComp, int myWobble){
+vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize){
 
 	string refSeq = fileToString(myFile1);
 	string querySeq = fileToString(myFile2);
@@ -317,9 +317,6 @@ void getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize
 	int index = myMotif1.size();
 	int refStart, refStop, qStart, qStop; 
 	vector<string> bigList; 
-
-	cout << "----------------------------------------" << endl << endl; 
-	cout << "Potential alternative co-motifs:" << endl; 
 
 	while(stop <= refSeq.size()) {
  		int mot1_found = finderFunc(refSeq, myMotif1, start, (stop+index)); 
@@ -343,8 +340,7 @@ void getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize
 				for(int n=refStart; n<refStop; n++) {
 					string altMot = refSeq.substr(n,4); 
 					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
-						//cout << "im here!!!" << endl; 
-						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) { //this shit not working!!!
+						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
 							bigList.push_back(altMot);
 						}
 					}
@@ -355,17 +351,7 @@ void getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize
 			}
 		}
 	}
-	if(myAlt=="ABCD"){
-		cout << "NONE!!" << endl << endl; 
-	}
-	else{
-		//cout << bigList.size() << endl; 
-		for(int k=0; k<bigList.size(); k++){
-			string entry = bigList.at(k);
-			cout << entry << endl; 
-		}
-		cout << endl; 
-	}
+	return bigList; 
 }
 
 int main(int argc, char* argv[]) {
@@ -435,7 +421,43 @@ int main(int argc, char* argv[]) {
 			cout << endl << myCount << " conserved binding sites found!!!" << endl << endl; 
 		}
 		if(altMots==1) {
-			getAltMotifs(f1, f2, m1, wSize, revComp, wobble); 
+			vector<string> tempList = getAltMotifs(f1,f2,m1,wSize);
+			vector<string> finalList = tempList; 
+			vector<string> tempList1;
+			vector<string> tempList2;
+
+			if(wobble==1){
+				vector<string> my_wobbleMots = getWobbleMotifs(m1); 
+				for(int i=0; i<my_wobbleMots.size(); i++){
+					string newMot1 = my_wobbleMots.at(i); 
+					tempList1 = getAltMotifs(f1,f2,newMot1,wSize);
+					for(int k=0; k<tempList1.size(); k++){
+						string myMot = tempList1.at(k);
+						if(find(finalList.begin(), finalList.end(), myMot) == finalList.end()) {
+							finalList.push_back(myMot); 
+						}
+					}
+				}
+			}
+			if(revComp==1){
+				string my_revComp = getRevComp(m1);
+				tempList2 = getAltMotifs(f1,f2,my_revComp,wSize);
+			}
+			
+			for(int z=0; z<tempList2.size(); z++){
+				string myMot1 = tempList2.at(z);
+				if(find(finalList.begin(), finalList.end(), myMot1) == finalList.end()) {
+					finalList.push_back(myMot1); 
+				}
+			}
+			cout << "----------------------------------------" << endl; 
+			cout << "Potential co-motifs to search for: " << endl << endl; 
+			for(int p=0; p<finalList.size(); p++){
+				cout << finalList.at(p) << endl; 
+			}
+			cout << endl; 
+
+			
 		}
 	} 
 }
