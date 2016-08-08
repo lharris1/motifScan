@@ -16,6 +16,7 @@
 #include <ctype.h>
 #include <vector>
 #include <stdio.h> 
+#include <algorithm>
 
 using namespace std;
 
@@ -315,6 +316,7 @@ void getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize
 	int stop = my_stop; 
 	int index = myMotif1.size();
 	int refStart, refStop, qStart, qStop; 
+	vector<string> bigList; 
 
 	cout << "----------------------------------------" << endl << endl; 
 	cout << "Potential alternative co-motifs:" << endl; 
@@ -341,7 +343,10 @@ void getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize
 				for(int n=refStart; n<refStop; n++) {
 					string altMot = refSeq.substr(n,4); 
 					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
-						cout << altMot << endl;
+						//cout << "im here!!!" << endl; 
+						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) { //this shit not working!!!
+							bigList.push_back(altMot);
+						}
 					}
 				}
 				myAlt = "AAAA"; 
@@ -354,7 +359,12 @@ void getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize
 		cout << "NONE!!" << endl << endl; 
 	}
 	else{
-		cout << myAlt << endl << endl; 
+		//cout << bigList.size() << endl; 
+		for(int k=0; k<bigList.size(); k++){
+			string entry = bigList.at(k);
+			cout << entry << endl; 
+		}
+		cout << endl; 
 	}
 }
 
