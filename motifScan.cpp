@@ -265,12 +265,12 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	return myClusterCount; 
 }
 
-void printStartUp(string myFile1, string myFile2, string myMotif1, string myMotif2, int myWinSize, int myRevComp, int myWobble){
+void printStartUp(string myFile1, string myFile2, string myMotif1, string myMotif2, int myWinSize, int myRevComp, int myWobble, int myAlt){
 		
 		if(myWinSize == 0) {
 			cout << endl; 
 			cout << "ERROR" << endl;
-			cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp Y/N] [wobble Y/N]" << endl;
+			cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp Y/N] [wobble Y/N] [getAltMotifs Y/N]" << endl;
 			cout << "See README file for more" << endl << endl; 
 		} 
 		else {
@@ -292,18 +292,37 @@ void printStartUp(string myFile1, string myFile2, string myMotif1, string myMoti
 			else{
 				printf("WobbleBase:  ON\n");
 			}
+			if(myAlt==0){
+				printf("getAltMotifs:  OFF\n");
+			}
+			else{
+				printf("getAltMotifs:  ON\n");
+			}
 			cout << endl; 
 			cout << "----------------------------------------" << endl << endl; 
 			cout << "searching..." << endl << endl; 
 		}
 }
 
+void getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize, int myRevComp, int myWobble){
+	//TODO: implement me here!!!
+	string myAlt = "ABCD"; 
+	cout << "----------------------------------------" << endl << endl; 
+	cout << "Potential alternative co-motifs:" << endl; 
+	if(myAlt=="ABCD"){
+		cout << "NONE!!" << endl << endl; 
+	}
+	else{
+		cout << myAlt << endl << endl; 
+	}
+}
+
 int main(int argc, char* argv[]) {
 
-	if(argc != 8) {
+	if(argc != 9) {
 		cout << endl; 
 		cout << "ERROR" << endl;
-		cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp Y/N] [wobble Y/N]" << endl;
+		cout << "usage: ./motifScan file1.fasta file2.fasta [motif1] [motif2] [windowSize] [revComp Y/N] [wobble Y/N] [getAltMotifs Y/N]" << endl;
 		cout << "See README file for more" << endl << endl; 
 	}
 	else {
@@ -314,9 +333,10 @@ int main(int argc, char* argv[]) {
 		int wSize = atoi(argv[5]);
 		int revComp = atoi(argv[6]);
 		int wobble = atoi(argv[7]); 
+		int altMots = atoi(argv[8]);
 		int myCount = 0; 
 
-		printStartUp(f1, f2, m1, m2, wSize, revComp, wobble);
+		printStartUp(f1, f2, m1, m2, wSize, revComp, wobble, altMots);
 
 		if(wobble==1){
 			vector<string> wobbleMots1 = getWobbleMotifs(m1); 
@@ -362,6 +382,9 @@ int main(int argc, char* argv[]) {
 		}
 		else {
 			cout << endl << myCount << " conserved binding sites found!!!" << endl << endl; 
+		}
+		if(altMots==1) {
+			getAltMotifs(f1, f2, m1, wSize, revComp, wobble); 
 		}
 	} 
 }
