@@ -305,14 +305,14 @@ void printStartUp(string myFile1, string myFile2, string myMotif1, string myMoti
 		}
 }
 
-void addAltMotifsToList(vector<pair<string,int> > finalList, vector<pair<string,int> > tmpList){
+void addAltMotifsToList(vector<pair<string,int>* >* finalList, vector<pair<string,int> > tmpList){
 
 	for(int i=0; i<tmpList.size(); i++){
 		pair<string,int> currTmp = tmpList.at(i);
-		for(int k=0; k<finalList.size(); k++){
-			pair<string,int> currFinal = finalList.at(k);
-			if(currFinal.first == currTmp.first){
-				currFinal.second = currFinal.second + currTmp.second;
+		for(int k=0; k<finalList->size(); k++){
+			pair<string,int>* currFinal = finalList->at(k);
+			if(currFinal->first == currTmp.first){
+				currFinal->second = currFinal->second + currTmp.second;
 			}
 		}
 	}
@@ -456,20 +456,20 @@ void getAltMotifs(string my_f1, string my_f2, string my_m1,int my_wSize, int my_
 
 	bigList = altMotifsEngine(my_f1,my_f2,my_m1,my_wSize);   //straight up
 
-	//if(my_wobble==1){
-	//	vector<string> my_wobbleMots = getWobbleMotifs(my_m1); 
-	//	for(int i=0; i<my_wobbleMots.size(); i++){
-	//		string newMot1 = my_wobbleMots.at(i); 
-	//		motsList1 = findMoreAltMotifs(my_f1,my_f2,newMot1,my_wSize);
-	//		addAltMotifsToList(bigList, motsList1); 
-	//	}
-	//}
+	if(my_wobble==1){
+		vector<string> my_wobbleMots = getWobbleMotifs(my_m1); 
+		for(int i=0; i<my_wobbleMots.size(); i++){
+			string newMot1 = my_wobbleMots.at(i); 
+			motsList1 = findMoreAltMotifs(my_f1,my_f2,newMot1,my_wSize);
+			addAltMotifsToList(bigList, motsList1); 
+		}
+	}
 
-	//if(my_revComp==1){
-	//	string my_revComp = getRevComp(my_m1);
-	//	motsList2 = altMotifsEngine(my_f1,my_f2,my_revComp,my_wSize);
-	//	addFunc(bigList, motsList2); 
-	//}
+	if(my_revComp==1){
+		string my_revComp = getRevComp(my_m1);
+		motsList2 = findMoreAltMotifs(my_f1,my_f2,my_revComp,my_wSize);
+		addAltMotifsToList(bigList, motsList2); 
+	}
 
 	cout << "----------------------------------------" << endl; 
 	cout << "Potential co-motifs to search for: " << endl << endl; 
