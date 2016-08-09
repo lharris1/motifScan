@@ -34,6 +34,8 @@ string fileToString(string fileName) {
 	myFile.close();
 	return fullSeq; 
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 string getRevComp(string mot1) {
 	string new_mot1; 
@@ -60,6 +62,8 @@ string getRevComp(string mot1) {
 	}
 	return new_mot1; 
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 vector<string> getWobbleMotifs(string mot) {
 	vector<string> bigList, bigList_temp, newMotList, newMotList_temp, toReturn;
@@ -167,6 +171,8 @@ vector<string> getWobbleMotifs(string mot) {
 
 	return toReturn; 
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 int finderFunc(string seq, string motif, int myStart, int myStop) {
 	int my_start, my_stop; 
@@ -192,6 +198,8 @@ int finderFunc(string seq, string motif, int myStart, int myStop) {
 		return -1; 
 	}
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 void outputClusterFound(int m1Ref, int m2Ref, int m1Query, int m2Query) {
 	cout << "----------------------------------------" << endl; 
@@ -203,6 +211,8 @@ void outputClusterFound(int m1Ref, int m2Ref, int m1Query, int m2Query) {
 	cout << "----------------------------------------" << endl; 
 	return; 
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 int scanEngine(string file1, string file2, string mot1, string mot2, int winSize) {
 
@@ -265,6 +275,8 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 	clusterCount = 0; 
 	return myClusterCount; 
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 void printStartUp(string myFile1, string myFile2, string myMotif1, string myMotif2, int myWinSize, int myRevComp, int myWobble, int myAlt){
 		
@@ -304,6 +316,8 @@ void printStartUp(string myFile1, string myFile2, string myMotif1, string myMoti
 			cout << "searching..." << endl << endl; 
 		}
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 void addAltMotifsToList(vector<pair<string,int>* >* finalList, vector<pair<string,int> > tmpList){
 
@@ -317,6 +331,9 @@ void addAltMotifsToList(vector<pair<string,int>* >* finalList, vector<pair<strin
 		}
 	}
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
 vector<pair<string,int> > findMoreAltMotifs(string file1, string file2, string motif1, int winSize){
 
 	vector<pair<string,int> > toReturn; 
@@ -382,6 +399,8 @@ vector<pair<string,int> > findMoreAltMotifs(string file1, string file2, string m
 	}
 	return toReturn; 
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 vector<pair<string,int>* >* altMotifsEngine(string file1, string file2, string motif1, int winSize){
 
@@ -448,11 +467,14 @@ vector<pair<string,int>* >* altMotifsEngine(string file1, string file2, string m
 	}
 	return toReturn; 
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 void getAltMotifs(string my_f1, string my_f2, string my_m1,int my_wSize, int my_revComp, int my_wobble){
 
 	vector<pair<string,int> > motsList1, motsList2;
-	vector<pair<string,int>* >* bigList; //final list, to print
+	vector<pair<string,int>* >* bigList; //stores all of the pairs
+	vector<pair<string,int>* > toPrint; //sorted list, to print
 
 	bigList = altMotifsEngine(my_f1,my_f2,my_m1,my_wSize);   //straight up
 
@@ -471,15 +493,24 @@ void getAltMotifs(string my_f1, string my_f2, string my_m1,int my_wSize, int my_
 		addAltMotifsToList(bigList, motsList2); 
 	}
 
+	for(int j=0; j<bigList->size(); j++){
+		pair<string,int>* entry = bigList->at(j);
+		if(entry->first.length() == 4){
+			toPrint.push_back(entry); 
+		}
+	}
+
 	cout << "----------------------------------------" << endl; 
 	cout << "Potential co-motifs to search for: " << endl << endl; 
-	cout << "         " << bigList->size() << " found" << endl; 
-	for(int p=0; p<bigList->size(); p++){
-		pair<string,int>* curr = bigList->at(p);
+	cout << "         " << toPrint.size() << " found" << endl; 
+	for(int p=0; p<toPrint.size(); p++){
+		pair<string,int>* curr = toPrint.at(p);
 		cout << curr->first << "   " << curr->second << endl;
 	}
 	cout << endl; 
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
 
@@ -558,62 +589,7 @@ int main(int argc, char* argv[]) {
 ///////////////////////////////    END CODE     ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize){ //I think this bitch is working
 
-	string refSeq = fileToString(myFile1);
-	string querySeq = fileToString(myFile2);
-	
-	int start = 0;
-	int my_stop = refSeq.size(); 
-	int stop = my_stop; 
-	int index = myMotif1.size();
-	int refStart, refStop, qStart, qStop; 
-	vector<string> bigList; 
-
-	while(stop <= refSeq.size()) {
- 		int mot1_found = finderFunc(refSeq, myMotif1, start, (stop+index)); 
-		if(mot1_found == -1){                     //mot1 not on ref
-			break; 
-		}
-		else {                                   //mot1 found on ref
-			start = mot1_found - myWinSize;
-			stop = mot1_found + myWinSize;  
-			refStart = start; 
-			refStop = stop; 
-
-			if(refStop>my_stop){
-				refStop = my_stop; 
-			}
-			int mot1_found1 = finderFunc(querySeq, myMotif1, start, stop); 
-			if(mot1_found1 == -1){               //mot1 NOT found on query
-				start = mot1_found+index; 
-				stop = my_stop; 
-				//break;      //not working, should probably leave out
-			}
-			else {                               //mot1 found on query
-				qStart = mot1_found1 - myWinSize; 
-				qStop = mot1_found1 + myWinSize; 
-				
-				for(int n=refStart; n<refStop; n++) {     //driving loop -- splitting and searching
-					string altMot = refSeq.substr(n,4); 
-					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
-						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
-							bigList.push_back(altMot);
-						}
-					}
-				}
-				if(stop> my_stop) {
-					break; 
-				}
-				start = mot1_found+index; 
-				stop = my_stop; 
-			}
-		}
-	}
-	return bigList; 
-}
-*/
 
 
 
