@@ -309,7 +309,6 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 
 	string refSeq = fileToString(myFile1);
 	string querySeq = fileToString(myFile2);
-	string myAlt = "ABCD"; 
 	
 	int start = 0;
 	int my_stop = refSeq.size(); 
@@ -319,6 +318,9 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 	vector<string> bigList; 
 
 	while(stop <= refSeq.size()) {
+		//cout << start << endl; 
+		//cout << stop << endl; 
+		//cout << refSeq.size() << endl; 
  		int mot1_found = finderFunc(refSeq, myMotif1, start, (stop+index)); 
 		if(mot1_found == 0){
 			break; 
@@ -328,12 +330,17 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 			stop = mot1_found + myWinSize;  
 			refStart = start; 
 			refStop = stop; 
+
+			if(refStop>my_stop){
+				refStop = my_stop; 
+			}
 			int mot1_found1 = finderFunc(querySeq, myMotif1, start, stop); 
 			if(mot1_found1 == 0){
 				start = mot1_found+index; 
 				stop = my_stop; 
 			}
 			else {                               //mot1 found on query
+				//cout << "one site found" << endl; 
 				qStart = mot1_found1-myWinSize; 
 				qStop = mot1_found1+myWinSize; 
 				
@@ -345,12 +352,15 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 						}
 					}
 				}
-				myAlt = "AAAA"; 
+				if(stop> my_stop) {
+					break; 
+				}
 				start = mot1_found+index; 
 				stop = my_stop; 
 			}
 		}
 	}
+	//cout << "-------------------------" << endl;
 	return bigList; 
 }
 
