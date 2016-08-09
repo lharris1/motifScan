@@ -189,7 +189,7 @@ int finderFunc(string seq, string motif, int myStart, int myStop) {
 		return found + my_start; 
 	}
 	else {
-		return 0; 
+		return -1; 
 	}
 }
 
@@ -218,26 +218,26 @@ int scanEngine(string file1, string file2, string mot1, string mot2, int winSize
 
 	while(stop <= refSeq.size()) {
  		int mot1_found = finderFunc(refSeq, mot1, start, (stop+index1)); 
-		if(mot1_found == 0){
+		if(mot1_found == -1){
 			break; 
 		}
 		else {                                   //mot1 found on ref
 			start = mot1_found - winSize;
 			stop = mot1_found + winSize;  
 			int mot2_found = finderFunc(refSeq, mot2, start, stop); 
-			if(mot2_found == 0){
+			if(mot2_found == -1){
 				start = mot1_found+index; 
 				stop = my_stop; 
 			}
 			else {                               //mot2 found on ref
 				int mot1_found1 = finderFunc(querySeq, mot1, start, stop);
-				if(mot1_found1 == 0){
+				if(mot1_found1 == -1){
 					start = mot1_found+index; 
 					stop = my_stop; 
 				}
 				else {                           //mot1 found on query...almost there...
 					int mot2_found1 = finderFunc(querySeq, mot2, start, stop); 
-					if(mot2_found1 == 0){
+					if(mot2_found1 == -1){
 						start = mot1_found+index; 
 						stop = my_stop; 
 					}
@@ -319,7 +319,7 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 
 	while(stop <= refSeq.size()) {
  		int mot1_found = finderFunc(refSeq, myMotif1, start, (stop+index)); 
-		if(mot1_found == 0){
+		if(mot1_found == -1){                     //mot1 not on ref
 			break; 
 		}
 		else {                                   //mot1 found on ref
@@ -332,39 +332,16 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 				refStop = my_stop; 
 			}
 			int mot1_found1 = finderFunc(querySeq, myMotif1, start, stop); 
-			if(mot1_found1 == 0){
+			if(mot1_found1 == -1){               //mot1 NOT found on query
 				start = mot1_found+index; 
 				stop = my_stop; 
+				//break;      //not working, should probably leave out
 			}
 			else {                               //mot1 found on query
-				qStart = mot1_found1-myWinSize; 
-				qStop = mot1_found1+myWinSize; 
+				qStart = mot1_found1 - myWinSize; 
+				qStop = mot1_found1 + myWinSize; 
 				
-				for(int n=refStart; n<refStop; n++) {
-					string altMot = refSeq.substr(n,4); 
-					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
-						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
-							bigList.push_back(altMot);
-						}
-					}
-				}
-				for(int n=refStart+1; n<refStop; n++) {
-					string altMot = refSeq.substr(n,4); 
-					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
-						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
-							bigList.push_back(altMot);
-						}
-					}
-				}
-				for(int n=refStart+2; n<refStop; n++) {
-					string altMot = refSeq.substr(n,4); 
-					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
-						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
-							bigList.push_back(altMot);
-						}
-					}
-				}
-				for(int n=refStart+3; n<refStop; n++) {
+				for(int n=refStart; n<refStop; n++) {     //driving loop -- splitting and searching
 					string altMot = refSeq.substr(n,4); 
 					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
 						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
