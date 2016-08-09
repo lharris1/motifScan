@@ -305,7 +305,7 @@ void printStartUp(string myFile1, string myFile2, string myMotif1, string myMoti
 		}
 }
 
-vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize){
+vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize){ //I think this bitch is working
 
 	string refSeq = fileToString(myFile1);
 	string querySeq = fileToString(myFile2);
@@ -458,7 +458,7 @@ int main(int argc, char* argv[]) {
 			}
 			cout << "----------------------------------------" << endl; 
 			cout << "Potential co-motifs to search for: " << endl << endl; 
-			cout << finalList.size() << endl; 
+			cout << "         " <<finalList.size() << " found" << endl; 
 			for(int p=0; p<finalList.size(); p++){
 				cout << finalList.at(p) << endl; 
 			}
