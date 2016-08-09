@@ -318,9 +318,6 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 	vector<string> bigList; 
 
 	while(stop <= refSeq.size()) {
-		//cout << start << endl; 
-		//cout << stop << endl; 
-		//cout << refSeq.size() << endl; 
  		int mot1_found = finderFunc(refSeq, myMotif1, start, (stop+index)); 
 		if(mot1_found == 0){
 			break; 
@@ -340,11 +337,34 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 				stop = my_stop; 
 			}
 			else {                               //mot1 found on query
-				//cout << "one site found" << endl; 
 				qStart = mot1_found1-myWinSize; 
 				qStop = mot1_found1+myWinSize; 
 				
 				for(int n=refStart; n<refStop; n++) {
+					string altMot = refSeq.substr(n,4); 
+					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
+						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
+							bigList.push_back(altMot);
+						}
+					}
+				}
+				for(int n=refStart+1; n<refStop; n++) {
+					string altMot = refSeq.substr(n,4); 
+					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
+						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
+							bigList.push_back(altMot);
+						}
+					}
+				}
+				for(int n=refStart+2; n<refStop; n++) {
+					string altMot = refSeq.substr(n,4); 
+					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
+						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
+							bigList.push_back(altMot);
+						}
+					}
+				}
+				for(int n=refStart+3; n<refStop; n++) {
 					string altMot = refSeq.substr(n,4); 
 					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
 						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
@@ -360,7 +380,6 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 			}
 		}
 	}
-	//cout << "-------------------------" << endl;
 	return bigList; 
 }
 
@@ -462,6 +481,7 @@ int main(int argc, char* argv[]) {
 			}
 			cout << "----------------------------------------" << endl; 
 			cout << "Potential co-motifs to search for: " << endl << endl; 
+			cout << finalList.size() << endl; 
 			for(int p=0; p<finalList.size(); p++){
 				cout << finalList.at(p) << endl; 
 			}
