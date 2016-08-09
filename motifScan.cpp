@@ -305,48 +305,71 @@ void printStartUp(string myFile1, string myFile2, string myMotif1, string myMoti
 		}
 }
 
-vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize){ //I think this bitch is working
+void addAltMotifsToList(vector<pair<string,int> > finalList, vector<pair<string,int> > tmpList){
 
-	string refSeq = fileToString(myFile1);
-	string querySeq = fileToString(myFile2);
-	
+	for(int i=0; i<tmpList.size(); i++){
+		pair<string,int> currTmp = tmpList.at(i);
+		for(int k=0; k<finalList.size(); k++){
+			pair<string,int> currFinal = finalList.at(k);
+			if(currFinal.first == currTmp.first){
+				currFinal.second = currFinal.second + currTmp.second;
+			}
+		}
+	}
+}
+vector<pair<string,int> > findMoreAltMotifs(string file1, string file2, string motif1, int winSize){
+
+	vector<pair<string,int> > toReturn; 
+	string refSeq = fileToString(file1);
+	string querySeq = fileToString(file2);
+
 	int start = 0;
 	int my_stop = refSeq.size(); 
 	int stop = my_stop; 
-	int index = myMotif1.size();
+	int index = motif1.size();
 	int refStart, refStop, qStart, qStop; 
-	vector<string> bigList; 
 
 	while(stop <= refSeq.size()) {
- 		int mot1_found = finderFunc(refSeq, myMotif1, start, (stop+index)); 
+ 		int mot1_found = finderFunc(refSeq, motif1, start, (stop+index)); 
 		if(mot1_found == -1){                     //mot1 not on ref
 			break; 
 		}
 		else {                                   //mot1 found on ref
-			start = mot1_found - myWinSize;
-			stop = mot1_found + myWinSize;  
+			start = mot1_found - winSize;
+			stop = mot1_found + winSize;  
 			refStart = start; 
 			refStop = stop; 
 
 			if(refStop>my_stop){
 				refStop = my_stop; 
 			}
-			int mot1_found1 = finderFunc(querySeq, myMotif1, start, stop); 
+			int mot1_found1 = finderFunc(querySeq, motif1, start, stop); 
 			if(mot1_found1 == -1){               //mot1 NOT found on query
 				start = mot1_found+index; 
 				stop = my_stop; 
 				//break;      //not working, should probably leave out
 			}
 			else {                               //mot1 found on query
-				qStart = mot1_found1 - myWinSize; 
-				qStop = mot1_found1 + myWinSize; 
-				
+				qStart = mot1_found1 - winSize; 
+				qStop = mot1_found1 + winSize; 
+
 				for(int n=refStart; n<refStop; n++) {     //driving loop -- splitting and searching
+	topOfLoop: 
 					string altMot = refSeq.substr(n,4); 
-					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
-						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
-							bigList.push_back(altMot);
-						}
+					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {    //motif found on query seq 
+						for(int i=0; i<toReturn.size(); i++){
+							pair<string,int> curr = toReturn.at(i);
+							if(curr.first == altMot){
+								curr.second += 1; 
+								n++; 
+								goto topOfLoop;     //not totally sure what to do here -- want to exit inner loop, but nothing else. maybe exit()? 
+							}
+						}      //altMot is not in toReturn
+						pair<string,int> pairToAdd;   //creating pair
+						pairToAdd.first = altMot;
+						pairToAdd.second = 1; 
+
+						toReturn.push_back(pairToAdd);     //adding to toReturn 
 					}
 				}
 				if(stop> my_stop) {
@@ -357,7 +380,105 @@ vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int
 			}
 		}
 	}
-	return bigList; 
+	return toReturn; 
+}
+
+vector<pair<string,int>* >* altMotifsEngine(string file1, string file2, string motif1, int winSize){
+
+	vector<pair<string,int>* >* toReturn = new vector<pair<string,int>* >; 
+	string refSeq = fileToString(file1);
+	string querySeq = fileToString(file2);
+
+	int start = 0;
+	int my_stop = refSeq.size(); 
+	int stop = my_stop; 
+	int index = motif1.size();
+	int refStart, refStop, qStart, qStop; 
+
+	while(stop <= refSeq.size()) {
+ 		int mot1_found = finderFunc(refSeq, motif1, start, (stop+index)); 
+		if(mot1_found == -1){                     //mot1 not on ref
+			break; 
+		}
+		else {                                   //mot1 found on ref
+			start = mot1_found - winSize;
+			stop = mot1_found + winSize;  
+			refStart = start; 
+			refStop = stop; 
+
+			if(refStop>my_stop){
+				refStop = my_stop; 
+			}
+			int mot1_found1 = finderFunc(querySeq, motif1, start, stop); 
+			if(mot1_found1 == -1){               //mot1 NOT found on query
+				start = mot1_found+index; 
+				stop = my_stop; 
+				//break;      //not working, should probably leave out
+			}
+			else {                               //mot1 found on query
+				qStart = mot1_found1 - winSize; 
+				qStop = mot1_found1 + winSize; 
+
+				for(int n=refStart; n<refStop; n++) {     //driving loop -- splitting and searching
+	topOfLoop: 
+					string altMot = refSeq.substr(n,4); 
+					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {    //motif found on query seq 
+						for(int i=0; i<toReturn->size(); i++){
+							pair<string,int>* curr = toReturn->at(i);
+							if(curr->first == altMot){
+								curr->second += 1; 
+								n++; 
+								goto topOfLoop;     //not totally sure what to do here -- want to exit inner loop, but nothing else. maybe exit()? 
+							}
+						}      //altMot is not in toReturn
+						pair<string,int>* pairToAdd = new pair<string,int>;   //creating pair
+						pairToAdd->first = altMot;
+						pairToAdd->second = 1; 
+
+						toReturn->push_back(pairToAdd);     //adding to toReturn 
+					}
+				}
+				if(stop> my_stop) {
+					break; 
+				}
+				start = mot1_found+index; 
+				stop = my_stop; 
+			}
+		}
+	}
+	return toReturn; 
+}
+
+void getAltMotifs(string my_f1, string my_f2, string my_m1,int my_wSize, int my_revComp, int my_wobble){
+
+	vector<pair<string,int> > motsList1, motsList2;
+	vector<pair<string,int>* >* bigList; //final list, to print
+
+	bigList = altMotifsEngine(my_f1,my_f2,my_m1,my_wSize);   //straight up
+
+	//if(my_wobble==1){
+	//	vector<string> my_wobbleMots = getWobbleMotifs(my_m1); 
+	//	for(int i=0; i<my_wobbleMots.size(); i++){
+	//		string newMot1 = my_wobbleMots.at(i); 
+	//		motsList1 = findMoreAltMotifs(my_f1,my_f2,newMot1,my_wSize);
+	//		addAltMotifsToList(bigList, motsList1); 
+	//	}
+	//}
+
+	//if(my_revComp==1){
+	//	string my_revComp = getRevComp(my_m1);
+	//	motsList2 = altMotifsEngine(my_f1,my_f2,my_revComp,my_wSize);
+	//	addFunc(bigList, motsList2); 
+	//}
+
+	cout << "----------------------------------------" << endl; 
+	cout << "Potential co-motifs to search for: " << endl << endl; 
+	cout << "         " << bigList->size() << " found" << endl; 
+	for(int p=0; p<bigList->size(); p++){
+		pair<string,int>* curr = bigList->at(p);
+		cout << curr->first << "   " << curr->second << endl;
+	}
+	cout << endl; 
 }
 
 int main(int argc, char* argv[]) {
@@ -427,52 +548,72 @@ int main(int argc, char* argv[]) {
 			cout << endl << myCount << " conserved binding sites found!!!" << endl << endl; 
 		}
 		if(altMots==1) {
-			vector<string> tempList = getAltMotifs(f1,f2,m1,wSize);
-			vector<string> finalList = tempList; 
-			vector<string> tempList1;
-			vector<string> tempList2;
-
-			if(wobble==1){
-				vector<string> my_wobbleMots = getWobbleMotifs(m1); 
-				for(int i=0; i<my_wobbleMots.size(); i++){
-					string newMot1 = my_wobbleMots.at(i); 
-					tempList1 = getAltMotifs(f1,f2,newMot1,wSize);
-					for(int k=0; k<tempList1.size(); k++){
-						string myMot = tempList1.at(k);
-						if(find(finalList.begin(), finalList.end(), myMot) == finalList.end()) {
-							finalList.push_back(myMot); 
-						}
-					}
-				}
-			}
-			if(revComp==1){
-				string my_revComp = getRevComp(m1);
-				tempList2 = getAltMotifs(f1,f2,my_revComp,wSize);
-			}
-			
-			for(int z=0; z<tempList2.size(); z++){
-				string myMot1 = tempList2.at(z);
-				if(find(finalList.begin(), finalList.end(), myMot1) == finalList.end()) {
-					finalList.push_back(myMot1); 
-				}
-			}
-			cout << "----------------------------------------" << endl; 
-			cout << "Potential co-motifs to search for: " << endl << endl; 
-			cout << "         " <<finalList.size() << " found" << endl; 
-			for(int p=0; p<finalList.size(); p++){
-				cout << finalList.at(p) << endl; 
-			}
-			cout << endl; 
-
-			
+			getAltMotifs(f1,f2,m1,wSize,revComp,wobble); 
 		}
 	} 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////    END CODE     ///////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+vector<string> getAltMotifs(string myFile1, string myFile2, string myMotif1, int myWinSize){ //I think this bitch is working
 
+	string refSeq = fileToString(myFile1);
+	string querySeq = fileToString(myFile2);
+	
+	int start = 0;
+	int my_stop = refSeq.size(); 
+	int stop = my_stop; 
+	int index = myMotif1.size();
+	int refStart, refStop, qStart, qStop; 
+	vector<string> bigList; 
 
+	while(stop <= refSeq.size()) {
+ 		int mot1_found = finderFunc(refSeq, myMotif1, start, (stop+index)); 
+		if(mot1_found == -1){                     //mot1 not on ref
+			break; 
+		}
+		else {                                   //mot1 found on ref
+			start = mot1_found - myWinSize;
+			stop = mot1_found + myWinSize;  
+			refStart = start; 
+			refStop = stop; 
 
-
+			if(refStop>my_stop){
+				refStop = my_stop; 
+			}
+			int mot1_found1 = finderFunc(querySeq, myMotif1, start, stop); 
+			if(mot1_found1 == -1){               //mot1 NOT found on query
+				start = mot1_found+index; 
+				stop = my_stop; 
+				//break;      //not working, should probably leave out
+			}
+			else {                               //mot1 found on query
+				qStart = mot1_found1 - myWinSize; 
+				qStop = mot1_found1 + myWinSize; 
+				
+				for(int n=refStart; n<refStop; n++) {     //driving loop -- splitting and searching
+					string altMot = refSeq.substr(n,4); 
+					if(finderFunc(querySeq, altMot, qStart, qStop)!=0) {
+						if(find(bigList.begin(), bigList.end(), altMot) == bigList.end()) {
+							bigList.push_back(altMot);
+						}
+					}
+				}
+				if(stop> my_stop) {
+					break; 
+				}
+				start = mot1_found+index; 
+				stop = my_stop; 
+			}
+		}
+	}
+	return bigList; 
+}
+*/
 
 
 
